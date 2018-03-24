@@ -35,5 +35,9 @@
     "dev": "webpack --progress --colors --watch --env dev",
     "test": "mocha --require babel-core/register --colors ./test/*.spec.js",
     "test:watch": "mocha --require babel-core/register --colors -w ./test/*.spec.js"
+  },
+  "dependencies": {
+    "eventify": "^2.0.1",
+    "lodash": "^4.17.5"
   }
 }
