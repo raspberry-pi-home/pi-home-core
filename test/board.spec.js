@@ -1,14 +1,7 @@
-/* global describe, it, before */
+import createBoard from '../src/board';
 
-import chai from 'chai';
-import {Cat, Dog} from '../src/board.js';
-
-chai.expect();
-
-const expect = chai.expect;
-
-describe('board.js', () => {
-    xit('should return the name', () => {
-        expect(lib.name).to.be.equal('Cat');
+describe('board', () => {
+    it('should pass', () => {
+        expect(createBoard()).toBeUndefined();
     });
 });

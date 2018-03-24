@@ -58,8 +58,8 @@ export const AVAILABLE_PINS = [
 ];
 
 // available pin types
-const PIN_TYPE_INPUT_DIGITAL = 'digitalInput'
-const PIN_TYPE_OUTPUT_DIGITAL = 'digitalOutput'
+const PIN_TYPE_INPUT_DIGITAL = 'digitalInput';
+const PIN_TYPE_OUTPUT_DIGITAL = 'digitalOutput';
 
 // available input pin types
 export const AVAILABLE_PIN_TYPE_INPUT = [
@@ -69,20 +69,20 @@ export const AVAILABLE_PIN_TYPE_INPUT = [
 // available output pin types
 export const AVAILABLE_PIN_TYPE_OUTPUT = [
     PIN_TYPE_OUTPUT_DIGITAL,
-]
+];
 
 // available pin types
 export const AVAILABLE_PIN_TYPES = _.concat(AVAILABLE_PIN_TYPE_INPUT, AVAILABLE_PIN_TYPE_OUTPUT);
 
 // available pin dependency types
-const PIN_DEPENDENCY_TYPE_TOGGLE = 'toggle'
-const PIN_DEPENDENCY_TYPE_DIRECT = 'direct'
+const PIN_DEPENDENCY_TYPE_TOGGLE = 'toggle';
+const PIN_DEPENDENCY_TYPE_DIRECT = 'direct';
 
 // available dependency types
 export const AVAILABLE_PIN_DEPENDENCY_TYPE = [
     PIN_DEPENDENCY_TYPE_TOGGLE,
     PIN_DEPENDENCY_TYPE_DIRECT,
-]
+];
 
 // required props
 export const PIN_SETTINGS_REQUIRED_PROPERTIES = [

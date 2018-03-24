@@ -18,28 +18,38 @@
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
-    "babel-eslint": "^8.0.3",
+    "babel-core": "^6.24.1",
+    "babel-eslint": "^7.0.0",
+    "babel-jest": "^21.2.0",
     "babel-loader": "^7.1.2",
     "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-preset-env": "^1.6.1",
-    "chai": "^4.1.2",
-    "eslint": "^4.13.1",
+    "babel-plugin-dynamic-import-node": "^1.1.0",
+    "babel-plugin-dynamic-import-webpack": "^1.0.1",
+    "babel-plugin-transform-class-properties": "6.23.0",
+    "babel-preset-env": "1.1.8",
+    "babel-preset-stage-3": "6.22.0",
+    "eslint": "^3.0.0",
+    "eslint-config-eventbrite": "^4.1.0",
     "eslint-loader": "^1.9.0",
-    "mocha": "^4.0.1",
+    "eslint-plugin-babel": "^4.1.2",
+    "eslint-plugin-import": "^2.0.0",
+    "jest": "^21.2.1",
+    "jest-junit": "^3.6.0",
+    "release-it": "^7.2.1",
     "webpack": "^3.10.0",
     "yargs": "^10.0.3"
   },
   "scripts": {
+    "eslint": "eslint **/*.js",
     "build": "webpack --env dev && webpack --env build",
     "dev": "webpack --progress --colors --watch --env dev",
-    "test": "mocha --require babel-core/register --colors ./test/*.spec.js",
-    "test:watch": "mocha --require babel-core/register --colors -w ./test/*.spec.js",
+    "test": "yarn test:unit:ci",
+    "test:unit": "jest --config=jest.json",
+    "test:unit:watch": "yarn test:unit --watch",
+    "test:unit:ci": "yarn test:unit --ci",
     "release": "release-it"
   },
   "dependencies": {
-    "eventify": "^2.0.1",
-    "lodash": "^4.17.5",
-    "release-it": "^7.2.1"
+    "lodash": "^4.17.5"
   }
 }
