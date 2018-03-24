@@ -47,7 +47,9 @@
     "test:unit": "jest --config=jest.json",
     "test:unit:watch": "yarn test:unit --watch",
     "test:unit:ci": "yarn test:unit --ci",
-    "release": "release-it"
+    "release": "release-it",
+    "release:minor": "release-it minor",
+    "release:major": "release-it major"
   },
   "dependencies": {
     "lodash": "^4.17.5"
