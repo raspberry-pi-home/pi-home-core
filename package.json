@@ -34,10 +34,12 @@
     "build": "webpack --env dev && webpack --env build",
     "dev": "webpack --progress --colors --watch --env dev",
     "test": "mocha --require babel-core/register --colors ./test/*.spec.js",
-    "test:watch": "mocha --require babel-core/register --colors -w ./test/*.spec.js"
+    "test:watch": "mocha --require babel-core/register --colors -w ./test/*.spec.js",
+    "release": "release-it"
   },
   "dependencies": {
     "eventify": "^2.0.1",
-    "lodash": "^4.17.5"
+    "lodash": "^4.17.5",
+    "release-it": "^7.2.1"
   }
 }
