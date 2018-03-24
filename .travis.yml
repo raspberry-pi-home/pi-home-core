@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+- 6
+- 7
+- 8
+cache:
+  directories:
+  - node_modules
+script:
+- npm test
+notifications:
+  email: false
+  slack:
+    rooms:
+      secure: jeOczSQ05IrfMWSwDY9df1LfktJpM4MqyS0gGgWjKocZk+GynrTV9UlwwBpEgFSv6Ax56xS+s61EPF89PAvszm0dvRbGDhOmy926Hc2fWhwnHK74mRsF/n9cDaNazigWFztRnCv3jxaAiFLpnT/OIKZ/CEF29Dha2AjE0jHbN4/5BGoOBiOVkLNMMInYFUvxt+3x8/VSkiQPZZzfLZhh7RPFhq2GPz2i6TYZHktKkku2/FdBm3RvWWGNdwmzYwAzqSBhVL1i7AfCR8Us+dqZaKkzEGMG3EFf7MsXWeBmaMzZ09LKMEpSoFgoXoo2Xl/AUCyNJ4cHyeiuzU5j7dnS8e+Tu/VC9VDEvLW3cdW3/Nc+GKoik1Lkr4OmmUx5j/18H8bgUzbnzVOLbWUABYVHrm/Ap2pMtsxtE1H8efWo5+7Wrn/78dqDFb1chDmZ0GdNhdWUCai9ZUvRft2ch2R70u9dWuHYK73f3hzMYBaqyIjF1n3OUJFNIuLc1ctuCNWoFQ4P1mvRyZLplqyAvslAdXc1iczLwZ7gc6Y7irfKkNMx/6ASZYul6yd6HpMzcBvDmJN00pTDuXiUexuY7GVnDyWiHYHvt+GWhxfDGFBChhcfkxvq10/9R24hLfc+eIXoupwyLpEx2F1NQQQiRmM2PoWxHrMcf7VtD2birsSDcUk=
