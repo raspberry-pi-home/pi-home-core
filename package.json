@@ -1,0 +1,22 @@
+{
+  "name": "pi-home-engine",
+  "version": "0.1.0",
+  "description": "Engine for https://github.com/raspberry-pi-home/pi-home-raspberry",
+  "author": {
+    "name": "Gustavo Ingrassia",
+    "email": "gustavo.ingrassia@gmail.com"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/raspberry-pi-home/pi-home-engine",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raspberry-pi-home/pi-home-engine.git"
+  },
+  "main": "index.js",
+  "engines": {
+    "node": ">=6"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
