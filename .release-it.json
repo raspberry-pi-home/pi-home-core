@@ -1,6 +1,6 @@
 {
-  "buildCommand": "npm run build",
-  "npm": {
-    "publish": false
-  }
+    "buildCommand": "npm run build",
+    "npm": {
+        "publish": false
+    }
 }
