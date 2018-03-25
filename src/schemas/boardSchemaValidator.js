@@ -4,8 +4,7 @@ import {Validator} from 'jsonschema';
 import {
     AVAILABLE_PIN_DEPENDENCY_TYPE,
     AVAILABLE_PINS,
-    AVAILABLE_PIN_TYPES,
-    PIN_SETTINGS_REQUIRED_PROPERTIES
+    AVAILABLE_PIN_TYPES
 } from '../constants';
 import {
     boardSchema,
@@ -30,6 +29,7 @@ const validate = (config) => {
     let result = validator.validate(config, boardSchema);
 
     if (!result.valid && process.env.DEBUG) {
+        // eslint-disable-next-line no-console
         console.log(result);
     }
 
