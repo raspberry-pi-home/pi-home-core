@@ -65,14 +65,14 @@ describe('board', () => {
                 createBoard({
                     pinSettings: [
                         {
-                            label: "Led 17",
+                            label: 'Led 17',
                             pin: 17,
-                            type: "digitalOutput",
+                            type: 'digitalOutput',
                         },
                         {
-                            label: "Led 18",
+                            label: 'Led 18',
                             pin: 17,
-                            type: "digitalOutput",
+                            type: 'digitalOutput',
                         },
                     ],
                 });
@@ -84,14 +84,14 @@ describe('board', () => {
                 createBoard({
                     pinSettings: [
                         {
-                            label: "Led 17",
+                            label: 'Led 17',
                             pin: 17,
-                            type: "digitalOutput",
+                            type: 'digitalOutput',
                         },
                         {
-                            label: "Led 17",
+                            label: 'Led 17',
                             pin: 18,
-                            type: "digitalOutput",
+                            type: 'digitalOutput',
                         },
                     ],
                 });
@@ -103,5 +103,5 @@ describe('board', () => {
         expect(() => {
             createBoard(validBoard);
         }).not.toThrow();
-    })
+    });
 });

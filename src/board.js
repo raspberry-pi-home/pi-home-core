@@ -2,9 +2,7 @@ import _ from 'lodash';
 
 import boardSchemaValidator from './schemas/boardSchemaValidator';
 
-const _validatePinSettings = (config) => {
-    let {pinSettings} = config;
-
+const _validatePinSettings = ({pinSettings}) => {
     if (_.isUndefined(pinSettings) || _.isEmpty(pinSettings)) {
         throw Error('No "pinSettings" provided');
     }
@@ -22,6 +20,16 @@ const _validatePinSettings = (config) => {
 
     if (_.size(labels) !== _.size(pinSettings)) {
         throw Error('Review your "pinSettings" configuration, seems there are duplicated labels');
+    }
+};
+
+const _validatePinDependencies = ({pinDependencies}) => {
+    if (_.isUndefined(pinDependencies) || _.isEmpty(pinDependencies)) {
+        throw Error('No "pinDependencies" provided');
+    }
+
+    if (!_.isArray(pinDependencies)) {
+        throw Error('"pinDependencies" must be an array');
     }
 };
 
@@ -43,9 +51,10 @@ const _validateConfigObject = (config) => {
     }
 
     _validatePinSettings(config);
+    _validatePinDependencies(config);
 };
 
-const createBoard = (config, options = {}) => {
+const createBoard = (config) => {
     _validateConfigObject(config);
 };
 
