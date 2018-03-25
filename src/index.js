@@ -1,7 +1,3 @@
-import Cat from './cat.js';
-import Dog from './dog.js';
+import createBoard from './board.js';
 
-export {
-    Cat,
-    Dog
-};
+export default createBoard;

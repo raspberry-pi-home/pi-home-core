@@ -43,15 +43,14 @@
     "eslint": "eslint **/*.js",
     "build": "webpack --env dev && webpack --env build",
     "dev": "webpack --progress --colors --watch --env dev",
-    "test": "yarn test:unit:ci",
-    "test:unit": "jest --config=jest.json",
-    "test:unit:watch": "yarn test:unit --watch",
-    "test:unit:ci": "yarn test:unit --ci",
+    "test": "jest --config=jest.config.json",
+    "test:watch": "DEBUG=true yarn test --watch",
     "release": "release-it",
     "release:minor": "release-it minor",
     "release:major": "release-it major"
   },
   "dependencies": {
+    "jsonschema": "^1.2.2",
     "lodash": "^4.17.5"
   }
 }

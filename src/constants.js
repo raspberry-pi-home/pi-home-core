@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 // available pins
 const GPIO2 = 2;
 const GPIO3 = 3;
@@ -72,7 +70,10 @@ export const AVAILABLE_PIN_TYPE_OUTPUT = [
 ];
 
 // available pin types
-export const AVAILABLE_PIN_TYPES = _.concat(AVAILABLE_PIN_TYPE_INPUT, AVAILABLE_PIN_TYPE_OUTPUT);
+export const AVAILABLE_PIN_TYPES = [
+    ...AVAILABLE_PIN_TYPE_INPUT,
+    ...AVAILABLE_PIN_TYPE_OUTPUT,
+];
 
 // available pin dependency types
 const PIN_DEPENDENCY_TYPE_TOGGLE = 'toggle';
@@ -91,7 +92,7 @@ export const PIN_SETTINGS_REQUIRED_PROPERTIES = [
     'type',
 ];
 export const PIN_DEPENDENCIES_REQUIRED_PROPERTIES = [
-    'input_pin',
-    'output_pin',
+    'inputPin',
+    'outputPin',
     'type',
 ];
