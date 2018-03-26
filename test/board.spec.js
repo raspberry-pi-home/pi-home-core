@@ -187,7 +187,7 @@ describe('board', () => {
                     }, {
                         label: 'Button 22',
                         pin: 22,
-                        type: 'digitalInput'
+                        type: 'digitalInput',
                     }],
                     pinDependencies: [{
                         inputPin: 17,
@@ -208,7 +208,7 @@ describe('board', () => {
                     }, {
                         label: 'Button 22',
                         pin: 22,
-                        type: 'digitalInput'
+                        type: 'digitalInput',
                     }],
                     pinDependencies: [{
                         inputPin: 22,

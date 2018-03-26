@@ -66,18 +66,18 @@ const _validateAndGetPinDependencies = ({pinDependencies}, pinSettings) => {
     }
 
     _.each(pinDependencies, ({inputPin, outputPin}) => {
-        let validInputPin = _.includes(AVAILABLE_PIN_TYPE_INPUT, pinSettings[`${inputPin}`]['type']);
+        let validInputPin = _.includes(AVAILABLE_PIN_TYPE_INPUT, pinSettings[`${inputPin}`].type);
 
         if (!validInputPin) {
             throw Error('Review your "pinDependencies" configuration, seems there is "inputPin" that is mapped to an ivalid value');
         }
 
-        let validOutputPin = _.includes(AVAILABLE_PIN_TYPE_OUTPUT, pinSettings[`${outputPin}`]['type']);
+        let validOutputPin = _.includes(AVAILABLE_PIN_TYPE_OUTPUT, pinSettings[`${outputPin}`].type);
+
         if (!validOutputPin) {
             throw Error('Review your "pinDependencies" configuration, seems there is "outputPin" that is mapped to an ivalid value');
         }
     });
-
 
     return pinDependencies;
 };
