@@ -28,7 +28,7 @@ validator.addSchema(pinDependenciesSchema, '/PinDependencies');
 const validate = (config) => {
     let result = validator.validate(config, boardSchema);
 
-    if (!result.valid && process.env.DEBUG) {
+    if (process.env.DEBUG && !result.valid) {
         // eslint-disable-next-line no-console
         console.log(result);
     }
