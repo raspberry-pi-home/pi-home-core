@@ -1,6 +1,6 @@
 {
   "name": "pi-home-engine",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Engine for https://github.com/raspberry-pi-home/pi-home-raspberry",
   "author": {
     "name": "Gustavo Ingrassia",
