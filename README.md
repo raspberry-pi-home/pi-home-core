@@ -1,12 +1,11 @@
-# pi-home-engine
+# pi-home-core
 
-[![Build Status](https://travis-ci.org/raspberry-pi-home/pi-home-engine.svg?branch=master)](https://travis-ci.org/raspberry-pi-home/pi-home-engine)
+[![Build Status](https://travis-ci.org/raspberry-pi-home/pi-home-core.svg?branch=master)](https://travis-ci.org/raspberry-pi-home/pi-home-core)
 
 ## Usage
 ```
-import createBoard from 'pi-home-engine';
+import createBoard from 'pi-home-core';
 
 let config = {};
-let options = {};
-let board = createBoard(config, options);
+let board = createBoard(config);
 ```

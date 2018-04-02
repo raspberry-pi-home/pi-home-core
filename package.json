@@ -1,18 +1,18 @@
 {
-  "name": "pi-home-engine",
+  "name": "pi-home-core",
   "version": "0.3.0",
-  "description": "Engine for https://github.com/raspberry-pi-home/pi-home-raspberry",
+  "description": "Core for https://github.com/raspberry-pi-home/pi-home-raspberry",
   "author": {
     "name": "Gustavo Ingrassia",
     "email": "gustavo.ingrassia@gmail.com"
   },
   "license": "MIT",
-  "homepage": "https://github.com/raspberry-pi-home/pi-home-engine",
+  "homepage": "https://github.com/raspberry-pi-home/pi-home-core",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/raspberry-pi-home/pi-home-engine.git"
+    "url": "git+https://github.com/raspberry-pi-home/pi-home-core.git"
   },
-  "main": "lib/pi-home-engine.min.js",
+  "main": "lib/pi-home-core.min.js",
   "engines": {
     "node": ">=6"
   },
