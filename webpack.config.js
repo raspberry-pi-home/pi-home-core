@@ -1,51 +1,26 @@
-const path = require('path');
-const {argv: {env}} = require('yargs');
-
 const {name: libraryName} = require('./package.json');
 
-let outputFile = `${libraryName}.js`;
+const outputFile = (env) => env === 'production' ? `${libraryName}.min.js` : `${libraryName}.js`;
 
-if (env === 'production') {
-    outputFile = `${libraryName}.min.js`;
-}
-
-const config = {
-    mode: env,
-    entry: `${__dirname}/src/index.js`,
-    output: {
-        path: `${__dirname}/lib`,
-        filename: outputFile,
-        library: libraryName,
-        libraryTarget: 'umd',
-        umdNamedDefine: true,
-    },
-    module: {
-        rules: [
-            {
-                test: /\.js$/,
-                loader: 'babel-loader',
-                exclude: /(node_modules)/,
-            },
-            {
-                test: /\.js$/,
-                loader: 'eslint-loader',
-                exclude: /node_modules/,
-                options: {
-                    configFile: '.eslintrc.json',
-                },
-            },
-        ],
-    },
-    resolve: {
-        modules: [
-            path.resolve('./node_modules'),
-            path.resolve('./src'),
-        ],
-        extensions: [
-            '.json',
-            '.js',
-        ],
-    },
-};
-
-module.exports = config;
+module.exports = (env, argv) => ({
+  entry: `${__dirname}/src/index`,
+  target: 'node',
+  output: {
+    path: `${__dirname}/lib`,
+    filename: outputFile(argv.mode),
+    library: libraryName,
+    libraryTarget: 'umd',
+    umdNamedDefine: true,
+  },
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js', '.json']
+  },
+  module: {
+    rules: [{
+      // Include ts, tsx, js, and jsx files.
+      test: /\.(ts|js)x?$/,
+      exclude: /node_modules/,
+      loader: 'babel-loader'
+    }]
+  }
+});

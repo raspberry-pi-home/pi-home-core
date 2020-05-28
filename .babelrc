@@ -1,34 +1,7 @@
 {
-    "presets": [
-        [
-            "env",
-            {
-                "targets": {
-                    "browsers": [
-                        "last 2 versions",
-                    ],
-                    "node": "current",
-                },
-                "modules": false,
-                "loose": true,
-            },
-        ],
-        "stage-3",
-    ],
-    "plugins": [
-        "transform-class-properties",
-        "dynamic-import-webpack",
-    ],
-    "env": {
-       "test": {
-           "presets": [
-               "env",
-               "stage-3",
-           ],
-           "plugins": [
-               "dynamic-import-node",
-               "transform-class-properties",
-           ],
-       },
-   },
+  "presets": ["@babel/env", "@babel/typescript"],
+  "plugins": [
+    "@babel/proposal-class-properties",
+    "@babel/proposal-object-rest-spread"
+  ]
 }
