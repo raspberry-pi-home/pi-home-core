@@ -2,7 +2,7 @@ import { includes } from 'lodash'
 import { Validator } from 'jsonschema'
 
 import {
-  AVAILABLE_PIN_DEPENDENCY_TYPE,
+  // AVAILABLE_PIN_DEPENDENCY_TYPE,
   AVAILABLE_PINS,
   AVAILABLE_PIN_TYPES,
 } from '../constants'
@@ -16,7 +16,7 @@ import {
 
 Validator.prototype.customFormats.availablePinNumbers = (pinNumber) => includes(AVAILABLE_PINS, pinNumber)
 Validator.prototype.customFormats.availablePinTypes = (pinType) => includes(AVAILABLE_PIN_TYPES, pinType)
-Validator.prototype.customFormats.availableDependencyTypes = (pinType) => includes(AVAILABLE_PIN_DEPENDENCY_TYPE, pinType)
+// Validator.prototype.customFormats.availableDependencyTypes = (pinType) => includes(AVAILABLE_PIN_DEPENDENCY_TYPE, pinType)
 
 const validator = new Validator()
 

@@ -78,14 +78,14 @@ export const AVAILABLE_PIN_TYPES = [
 ]
 
 // available pin dependency types
-const PIN_DEPENDENCY_TYPE_TOGGLE = 'toggle'
-const PIN_DEPENDENCY_TYPE_DIRECT = 'direct'
+// const PIN_DEPENDENCY_TYPE_TOGGLE = 'toggle'
+// const PIN_DEPENDENCY_TYPE_DIRECT = 'direct'
 
 // available dependency types
-export const AVAILABLE_PIN_DEPENDENCY_TYPE = [
-  PIN_DEPENDENCY_TYPE_TOGGLE,
-  PIN_DEPENDENCY_TYPE_DIRECT,
-]
+// export const AVAILABLE_PIN_DEPENDENCY_TYPE = [
+//   PIN_DEPENDENCY_TYPE_TOGGLE,
+//   PIN_DEPENDENCY_TYPE_DIRECT,
+// ]
 
 // required props
 export const PIN_SETTINGS_REQUIRED_PROPERTIES = [
