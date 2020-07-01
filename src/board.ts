@@ -7,4 +7,8 @@ export class Board {
   constructor(config: Config) {
     this.config = validateAndGetConfigObject(config)
   }
+
+  run = (): void => {
+
+  }
 }
