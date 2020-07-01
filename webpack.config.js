@@ -1,6 +1,6 @@
 const {name: libraryName} = require('./package.json');
 
-const outputFile = (env) => env === 'production' ? `${libraryName}.min.js` : `${libraryName}.js`;
+const outputFile = (mode) => mode === 'production' ? `${libraryName}.min.js` : `${libraryName}.js`;
 
 module.exports = (env, argv) => ({
   entry: `${__dirname}/src/index`,
