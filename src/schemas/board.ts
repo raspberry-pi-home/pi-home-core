@@ -66,10 +66,10 @@ export const boardSchema = {
   'id': '/Config',
   'type': 'object',
   'properties': {
-    'pinSettings': {
+    'pins': {
       '$ref': '/PinSettings',
     },
-    'pinDependencies': {
+    'dependencies': {
       '$ref': '/PinDependencies',
     },
   },

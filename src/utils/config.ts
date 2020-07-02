@@ -7,47 +7,48 @@ import {
 } from '../constants'
 import validateBoardSchema from '../schemas/boardSchemaValidator'
 
-interface PinSettings {
+interface PinSetting {
   label: string
   pin: number
   type: string
 }
 
-interface PinDependencies {
+interface PinDependency {
   inputPin: number
   outputPin: number
 }
 
+type PinSettings = Array<PinSetting>
+type PinDependencies = Array<PinDependency>
+
 export interface Config {
-  pinSettings?: Array<PinSettings>
-  pinDependencies?: Array<PinDependencies>
+  pins?: PinSettings
+  dependencies?: Array<PinDependency>
 }
 
-const _validateAndGetPinSettings = (config: Config): object => {
-  const { pinSettings } = config
-
-  if (_.isUndefined(pinSettings) || _.isEmpty(pinSettings)) {
-    throw Error('No "pinSettings" provided')
+const validateAndGetPinSettings = (pins?: PinSettings): object => {
+  if (_.isUndefined(pins) || _.isEmpty(pins)) {
+    throw Error('No "pins" provided')
   }
 
-  if (!_.isArray(pinSettings)) {
-    throw Error('"pinSettings" must be an array')
+  if (!_.isArray(pins)) {
+    throw Error('"pins" must be an array')
   }
 
-  const pins = new Set(_.map(pinSettings, 'pin'))
+  const allPins = _.chain(pins).map('pin').uniq().value()
 
-  if (_.size(pins) !== _.size(pinSettings)) {
-    throw Error('Review your "pinSettings" configuration, seems there are duplicated or missing pins')
+  if (_.size(allPins) !== _.size(pins)) {
+    throw Error('Review your "pins" configuration, seems there are duplicated pins')
   }
 
-  const labels = new Set(_.map(pinSettings, 'label'))
+  const labels = _.chain(pins).map('label').uniq().value()
 
-  if (_.size(labels) !== _.size(pinSettings)) {
-    throw Error('Review your "pinSettings" configuration, seems there are duplicated or missing labels')
+  if (_.size(labels) !== _.size(pins)) {
+    throw Error('Review your "pins" configuration, seems there are duplicated labels')
   }
 
   return _.chain(AVAILABLE_PINS).reduce((memo, pin) => {
-    const pinSetting = _.find(pinSettings, { pin })
+    const pinSetting = _.find(pins, { pin })
 
     if (pinSetting) {
       return {
@@ -65,43 +66,45 @@ const _validateAndGetPinSettings = (config: Config): object => {
   }, {}).value()
 }
 
-const _validateAndGetPinDependencies = (config: Config, pinSettings: object): object => {
-  const { pinDependencies } = config
-
-  if (_.isUndefined(pinDependencies) || _.isEmpty(pinDependencies)) {
-    throw Error('No "pinDependencies" provided')
+const validateAndGetPinDependencies = (pins: object, dependencies?: PinDependencies): object => {
+  if (_.isUndefined(dependencies) || _.isEmpty(dependencies)) {
+    throw Error('No "dependencies" provided')
   }
 
-  if (!_.isArray(pinDependencies)) {
-    throw Error('"pinDependencies" must be an array')
+  if (!_.isArray(dependencies)) {
+    throw Error('"dependencies" must be an array')
   }
 
-  const samePin = !!_.chain(pinDependencies)
+  const samePin = !!_.chain(dependencies)
     .filter(({ inputPin, outputPin }) => (inputPin === outputPin))
     .size()
     .value()
 
   if (samePin) {
-    throw Error('Review your "pinDependencies" configuration, seems there is "inputPin" and "outputPin" with the same value')
+    throw Error('Review your "dependencies" configuration, seems there is "inputPin" and "outputPin" with the same value')
   }
 
-  _.each(pinDependencies, ({ inputPin, outputPin }) => {
+  _.each(dependencies, ({ inputPin, outputPin }) => {
     // @ts-ignore TS7053
-    const validInputPin = _.includes(AVAILABLE_PIN_TYPE_INPUT, pinSettings[inputPin].type)
+    const validInputPin = _.includes(AVAILABLE_PIN_TYPE_INPUT, pins[inputPin].type)
 
     if (!validInputPin) {
-      throw Error('Review your "pinDependencies" configuration, seems there is "inputPin" that is mapped to an invalid value')
+      throw Error('Review your "dependencies" configuration, seems there is "inputPin" that is mapped to an invalid value')
     }
 
     // @ts-ignore TS7053
-    const validOutputPin = _.includes(AVAILABLE_PIN_TYPE_OUTPUT, pinSettings[outputPin].type)
+    const validOutputPin = _.includes(AVAILABLE_PIN_TYPE_OUTPUT, pins[outputPin].type)
 
     if (!validOutputPin) {
-      throw Error('Review your "pinDependencies" configuration, seems there is "outputPin" that is mapped to an invalid value')
+      throw Error('Review your "dependencies" configuration, seems there is "outputPin" that is mapped to an invalid value')
     }
   })
 
-  return pinDependencies
+  return dependencies
+}
+
+export const validatePins = (pin: PinSetting, pins?: PinSettings): void => {
+  validateAndGetPinSettings([pin, ...pins!] as PinSettings)
 }
 
 export const validateAndGetConfigObject = (config: Config): object => {
@@ -125,11 +128,11 @@ export const validateAndGetConfigObject = (config: Config): object => {
     throw Error('Configuration object must agreed the defined schema')
   }
 
-  const pinSettings: object = _validateAndGetPinSettings(config)
-  const pinDependencies: object = _validateAndGetPinDependencies(config, pinSettings)
+  const pins: object = validateAndGetPinSettings(config.pins)
+  const dependencies: object = validateAndGetPinDependencies(pins, config.dependencies)
 
   return {
-    pinSettings,
-    pinDependencies,
+    pins,
+    dependencies,
   }
 }

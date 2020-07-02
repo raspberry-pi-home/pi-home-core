@@ -88,13 +88,13 @@ export const AVAILABLE_PIN_TYPES = [
 // ]
 
 // required props
-export const PIN_SETTINGS_REQUIRED_PROPERTIES = [
-  'label',
-  'pin',
-  'type',
-]
-export const PIN_DEPENDENCIES_REQUIRED_PROPERTIES = [
-  'inputPin',
-  'outputPin',
-  'type',
-]
+// export const PIN_SETTINGS_REQUIRED_PROPERTIES = [
+//   'label',
+//   'pin',
+//   'type',
+// ]
+// export const PIN_DEPENDENCIES_REQUIRED_PROPERTIES = [
+//   'inputPin',
+//   'outputPin',
+//   'type',
+// ]

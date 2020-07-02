@@ -1,5 +1,5 @@
 {
-  "pinSettings": [
+  "pins": [
     {
       "label": "Led 17",
       "pin": 17,
@@ -21,7 +21,7 @@
       "type": "pushButton"
     }
   ],
-  "pinDependencies": [
+  "dependencies": [
     {
       "inputPin": 22,
       "outputPin": 17
