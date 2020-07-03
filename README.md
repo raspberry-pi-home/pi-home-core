@@ -21,12 +21,12 @@ try {
 ```
 
 ```
-import { validatePins } from 'pi-home-core'
+import { validateDevice } from 'pi-home-core'
 
 try {
-  validatePins(pin, pins)
+  validateDevice(device, devices)
 } catch(e) {
-  // pins invalid
+  // device invalid
   console.log(e)
 }
 ```
@@ -39,19 +39,31 @@ Creates a new Board component which will handle all the interactions between the
 #### run()
 Runs the board
 
-### validatePins(pin, pins)
-Validates if the pin is valid related to the other pins
+### validateDevice(device, devices)
+Validates if the device is valid related to the other devices
 
 ---
 
 ### Concepts
 
-#### - pin
+#### - config
+```
+{
+  devices: [
+    ...device
+  ],
+  dependencies: [
+    ...dependency
+  ]
+}
+```
+
+#### - device
 ```
 {
   label: <label>,
   pin: <pin_number>,
-  type: <pin_type>
+  type: <device_type>
 }
 ```
 
@@ -83,13 +95,13 @@ Validates if the pin is valid related to the other pins
 * *26*
 * *27*
 
-##### pin types
+##### device types
 * *led*
 * *onOffButton*
 * *pushButton*
 
-#### - pins
-array of *pin*
+#### - devices
+array of *device*
 
 #### - dependency
 ```
@@ -101,15 +113,3 @@ array of *pin*
 
 #### - dependencies
 array of *dependency*
-
-#### - config
-```
-{
-  pins: [
-    ...pin
-  ],
-  dependencies: [
-    ...dependency
-  ]
-}
-```

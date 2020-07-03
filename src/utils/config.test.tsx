@@ -1,11 +1,11 @@
-import { validateAndGetConfigObject, validatePins } from './config'
+import { validateAndGetConfigObject, validateDevice } from './config'
 const validBoard = require('../__fixtures__/board.json')
 
-describe('pins', () => {
-  test('should throw an error when pins are duplicated', () => {
+describe('devices', () => {
+  test('should throw an error when devices are duplicated', () => {
     expect(() => {
       validateAndGetConfigObject({
-        pins: [{
+        devices: [{
           label: 'Led 17',
           pin: 17,
           type: 'led',
@@ -15,13 +15,13 @@ describe('pins', () => {
           type: 'led',
         }],
       })
-    }).toThrowError('Review your "pins" configuration, seems there are duplicated pins')
+    }).toThrowError('Review your "devices" configuration, seems there are duplicated pins')
   })
 
   test('should throw an error when labels are duplicated', () => {
     expect(() => {
       validateAndGetConfigObject({
-        pins: [{
+        devices: [{
           label: 'Led 17',
           pin: 17,
           type: 'led',
@@ -31,7 +31,7 @@ describe('pins', () => {
           type: 'led',
         }],
       })
-    }).toThrowError('Review your "pins" configuration, seems there are duplicated labels')
+    }).toThrowError('Review your "devices" configuration, seems there are duplicated labels')
   })
 })
 
@@ -39,7 +39,7 @@ describe('dependencies', () => {
   test('should throw an error when dependencies object is missing', () => {
     expect(() => {
       validateAndGetConfigObject({
-        pins: [{
+        devices: [{
           label: 'Led 17',
           pin: 17,
           type: 'led',
@@ -51,7 +51,7 @@ describe('dependencies', () => {
   test('should throw an error when inputPin and outputPin are the same', () => {
     expect(() => {
       validateAndGetConfigObject({
-        pins: [{
+        devices: [{
           label: 'Led 17',
           pin: 17,
           type: 'led',
@@ -67,7 +67,7 @@ describe('dependencies', () => {
   test('should throw an error when input pin does not match', () => {
     expect(() => {
       validateAndGetConfigObject({
-        pins: [{
+        devices: [{
           label: 'Led 17',
           pin: 17,
           type: 'led',
@@ -87,7 +87,7 @@ describe('dependencies', () => {
   test('should throw an error when output pin does not match', () => {
     expect(() => {
       validateAndGetConfigObject({
-        pins: [{
+        devices: [{
           label: 'Led 17',
           pin: 17,
           type: 'led',
@@ -105,10 +105,10 @@ describe('dependencies', () => {
   })
 })
 
-describe('validatePins', () => {
+describe('validateDevice', () => {
   test('should throw an error when pins are duplicated', () => {
     expect(() => {
-      validatePins({
+      validateDevice({
         'label': 'Led 17',
         'pin': 17,
         'type': 'led',
@@ -117,12 +117,12 @@ describe('validatePins', () => {
         'pin': 17,
         'type': 'led',
       }])
-    }).toThrowError('Review your "pins" configuration, seems there are duplicated pins')
+    }).toThrowError('Review your "devices" configuration, seems there are duplicated pins')
   })
 
   test('should throw an error when labels are duplicated', () => {
     expect(() => {
-      validatePins({
+      validateDevice({
         'label': 'Led 17',
         'pin': 17,
         'type': 'led',
@@ -131,12 +131,12 @@ describe('validatePins', () => {
         'pin': 18,
         'type': 'led',
       }])
-    }).toThrowError('Review your "pins" configuration, seems there are duplicated labels')
+    }).toThrowError('Review your "devices" configuration, seems there are duplicated labels')
   })
 
   test('should pass', () => {
     expect(() => {
-      validatePins({
+      validateDevice({
         'label': 'Led 17',
         'pin': 17,
         'type': 'led',

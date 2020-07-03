@@ -1,5 +1,5 @@
-export const pinSettingSchema = {
-  'id': '/PinSetting',
+export const deviceSchema = {
+  'id': '/Device',
   'type': 'object',
   'properties': {
     'label': {
@@ -14,24 +14,23 @@ export const pinSettingSchema = {
     'type': {
       'type': 'string',
       'required': true,
-      'format': 'availablePinTypes',
+      'format': 'availableDeviceTypes',
     },
   },
 }
 
-export const pinSettingsSchema = {
-  'id': '/PinSettings',
+export const devicesSchema = {
+  'id': '/Devices',
   'type': 'array',
   'uniqueItems': true,
   'items': {
-    '$ref': '/PinSetting',
+    '$ref': '/Device',
     'minItems': 1,
   },
 }
 
-
-export const pinDependencySchema = {
-  'id': '/PinDependency',
+export const dependencySchema = {
+  'id': '/Dependency',
   'type': 'object',
   'properties': {
     'inputPin': {
@@ -44,20 +43,15 @@ export const pinDependencySchema = {
       'required': true,
       'format': 'availablePinNumbers',
     },
-    // 'type': {
-    //   'type': 'string',
-    //   'required': true,
-    //   'format': 'availableDependencyTypes',
-    // },
   },
 }
 
-export const pinDependenciesSchema = {
-  'id': '/PinDependencies',
+export const dependenciesSchema = {
+  'id': '/Dependencies',
   'type': 'array',
   'uniqueItems': true,
   'items': {
-    '$ref': '/PinDependency',
+    '$ref': '/Dependency',
     'minItems': 1,
   },
 }
@@ -66,11 +60,11 @@ export const boardSchema = {
   'id': '/Config',
   'type': 'object',
   'properties': {
-    'pins': {
-      '$ref': '/PinSettings',
+    'devices': {
+      '$ref': '/Devices',
     },
     'dependencies': {
-      '$ref': '/PinDependencies',
+      '$ref': '/Dependencies',
     },
   },
 }

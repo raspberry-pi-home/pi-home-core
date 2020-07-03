@@ -1,31 +1,31 @@
 import { includes } from 'lodash'
 import { Validator } from 'jsonschema'
 
+import type { Config } from '../utils/config'
+
 import {
-  // AVAILABLE_PIN_DEPENDENCY_TYPE,
   AVAILABLE_PINS,
-  AVAILABLE_PIN_TYPES,
+  AVAILABLE_DEVICE_TYPES,
 } from '../constants'
 import {
   boardSchema,
-  pinDependencySchema,
-  pinDependenciesSchema,
-  pinSettingSchema,
-  pinSettingsSchema,
+  dependencySchema,
+  dependenciesSchema,
+  deviceSchema,
+  devicesSchema,
 } from './board'
 
 Validator.prototype.customFormats.availablePinNumbers = (pinNumber) => includes(AVAILABLE_PINS, pinNumber)
-Validator.prototype.customFormats.availablePinTypes = (pinType) => includes(AVAILABLE_PIN_TYPES, pinType)
-// Validator.prototype.customFormats.availableDependencyTypes = (pinType) => includes(AVAILABLE_PIN_DEPENDENCY_TYPE, pinType)
+Validator.prototype.customFormats.availableDeviceTypes = (deviceType) => includes(AVAILABLE_DEVICE_TYPES, deviceType)
 
 const validator = new Validator()
 
-validator.addSchema(pinSettingSchema, '/PinSetting')
-validator.addSchema(pinSettingsSchema, '/PinSettings')
-validator.addSchema(pinDependencySchema, '/PinDependency')
-validator.addSchema(pinDependenciesSchema, '/PinDependencies')
+validator.addSchema(deviceSchema, '/Device')
+validator.addSchema(devicesSchema, '/Devices')
+validator.addSchema(dependencySchema, '/Dependency')
+validator.addSchema(dependenciesSchema, '/Dependencies')
 
-const validate = (config: object): boolean => {
+const validate = (config: Config): boolean => {
   const result = validator.validate(config, boardSchema)
 
   if (process.env.DEBUG && !result.valid) {

@@ -55,46 +55,24 @@ export const AVAILABLE_PINS = [
   GPIO27,
 ]
 
-// available pin types
-const PIN_TYPE_INPUT_ONOFF_BUTTON = 'onOffButton'
-const PIN_TYPE_INPUT_PUSH_BUTTON = 'pushButton'
-const PIN_TYPE_OUTPUT_LED = 'led'
+// available device types
+const DEVICE_TYPE_INPUT_ONOFF_BUTTON = 'onOffButton'
+const DEVICE_TYPE_INPUT_PUSH_BUTTON = 'pushButton'
+const DEVICE_TYPE_OUTPUT_LED = 'led'
 
-// available input pin types
-export const AVAILABLE_PIN_TYPE_INPUT = [
-  PIN_TYPE_INPUT_ONOFF_BUTTON,
-  PIN_TYPE_INPUT_PUSH_BUTTON,
+// available input device types
+export const AVAILABLE_DEVICE_TYPE_INPUT = [
+  DEVICE_TYPE_INPUT_ONOFF_BUTTON,
+  DEVICE_TYPE_INPUT_PUSH_BUTTON,
 ]
 
-// available output pin types
-export const AVAILABLE_PIN_TYPE_OUTPUT = [
-  PIN_TYPE_OUTPUT_LED,
+// available output device types
+export const AVAILABLE_DEVICE_TYPE_OUTPUT = [
+  DEVICE_TYPE_OUTPUT_LED,
 ]
 
-// available pin types
-export const AVAILABLE_PIN_TYPES = [
-  ...AVAILABLE_PIN_TYPE_INPUT,
-  ...AVAILABLE_PIN_TYPE_OUTPUT,
+// available device types
+export const AVAILABLE_DEVICE_TYPES = [
+  ...AVAILABLE_DEVICE_TYPE_INPUT,
+  ...AVAILABLE_DEVICE_TYPE_OUTPUT,
 ]
-
-// available pin dependency types
-// const PIN_DEPENDENCY_TYPE_TOGGLE = 'toggle'
-// const PIN_DEPENDENCY_TYPE_DIRECT = 'direct'
-
-// available dependency types
-// export const AVAILABLE_PIN_DEPENDENCY_TYPE = [
-//   PIN_DEPENDENCY_TYPE_TOGGLE,
-//   PIN_DEPENDENCY_TYPE_DIRECT,
-// ]
-
-// required props
-// export const PIN_SETTINGS_REQUIRED_PROPERTIES = [
-//   'label',
-//   'pin',
-//   'type',
-// ]
-// export const PIN_DEPENDENCIES_REQUIRED_PROPERTIES = [
-//   'inputPin',
-//   'outputPin',
-//   'type',
-// ]

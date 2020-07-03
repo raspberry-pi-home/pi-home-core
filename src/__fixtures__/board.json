@@ -1,5 +1,5 @@
 {
-  "pins": [
+  "devices": [
     {
       "label": "Led 17",
       "pin": 17,

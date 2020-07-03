@@ -2,58 +2,58 @@ import _ from 'lodash'
 
 import {
   AVAILABLE_PINS,
-  AVAILABLE_PIN_TYPE_INPUT,
-  AVAILABLE_PIN_TYPE_OUTPUT,
+  AVAILABLE_DEVICE_TYPE_INPUT,
+  AVAILABLE_DEVICE_TYPE_OUTPUT,
 } from '../constants'
 import validateBoardSchema from '../schemas/boardSchemaValidator'
 
-interface PinSetting {
+interface Device {
   label: string
   pin: number
   type: string
 }
 
-interface PinDependency {
+interface Dependency {
   inputPin: number
   outputPin: number
 }
 
-type PinSettings = Array<PinSetting>
-type PinDependencies = Array<PinDependency>
+type Devices = Array<Device>
+type Dependencies = Array<Dependency>
 
 export interface Config {
-  pins?: PinSettings
-  dependencies?: Array<PinDependency>
+  devices?: Devices
+  dependencies?: Array<Dependency>
 }
 
-const validateAndGetPinSettings = (pins?: PinSettings): object => {
-  if (_.isUndefined(pins) || _.isEmpty(pins)) {
-    throw Error('No "pins" provided')
+const validateAndGetDevices = (devices?: Devices): object => {
+  if (_.isUndefined(devices) || _.isEmpty(devices)) {
+    throw Error('No "devices" provided')
   }
 
-  if (!_.isArray(pins)) {
-    throw Error('"pins" must be an array')
+  if (!_.isArray(devices)) {
+    throw Error('"devices" must be an array')
   }
 
-  const allPins = _.chain(pins).map('pin').uniq().value()
+  const allPins = _.chain(devices).map('pin').uniq().value()
 
-  if (_.size(allPins) !== _.size(pins)) {
-    throw Error('Review your "pins" configuration, seems there are duplicated pins')
+  if (_.size(allPins) !== _.size(devices)) {
+    throw Error('Review your "devices" configuration, seems there are duplicated pins')
   }
 
-  const labels = _.chain(pins).map('label').uniq().value()
+  const labels = _.chain(devices).map('label').uniq().value()
 
-  if (_.size(labels) !== _.size(pins)) {
-    throw Error('Review your "pins" configuration, seems there are duplicated labels')
+  if (_.size(labels) !== _.size(devices)) {
+    throw Error('Review your "devices" configuration, seems there are duplicated labels')
   }
 
   return _.chain(AVAILABLE_PINS).reduce((memo, pin) => {
-    const pinSetting = _.find(pins, { pin })
+    const device = _.find(devices, { pin })
 
-    if (pinSetting) {
+    if (device) {
       return {
         ...memo,
-        [pin]: pinSetting,
+        [pin]: device,
       }
     }
 
@@ -66,7 +66,7 @@ const validateAndGetPinSettings = (pins?: PinSettings): object => {
   }, {}).value()
 }
 
-const validateAndGetPinDependencies = (pins: object, dependencies?: PinDependencies): object => {
+const validateAndGetDependencies = (devices: object, dependencies?: Dependencies): object => {
   if (_.isUndefined(dependencies) || _.isEmpty(dependencies)) {
     throw Error('No "dependencies" provided')
   }
@@ -86,14 +86,14 @@ const validateAndGetPinDependencies = (pins: object, dependencies?: PinDependenc
 
   _.each(dependencies, ({ inputPin, outputPin }) => {
     // @ts-ignore TS7053
-    const validInputPin = _.includes(AVAILABLE_PIN_TYPE_INPUT, pins[inputPin].type)
+    const validInputPin = _.includes(AVAILABLE_DEVICE_TYPE_INPUT, devices[inputPin].type)
 
     if (!validInputPin) {
       throw Error('Review your "dependencies" configuration, seems there is "inputPin" that is mapped to an invalid value')
     }
 
     // @ts-ignore TS7053
-    const validOutputPin = _.includes(AVAILABLE_PIN_TYPE_OUTPUT, pins[outputPin].type)
+    const validOutputPin = _.includes(AVAILABLE_DEVICE_TYPE_OUTPUT, devices[outputPin].type)
 
     if (!validOutputPin) {
       throw Error('Review your "dependencies" configuration, seems there is "outputPin" that is mapped to an invalid value')
@@ -103,8 +103,8 @@ const validateAndGetPinDependencies = (pins: object, dependencies?: PinDependenc
   return dependencies
 }
 
-export const validatePins = (pin: PinSetting, pins?: PinSettings): void => {
-  validateAndGetPinSettings([pin, ...pins!] as PinSettings)
+export const validateDevice = (device: Device, devices?: Devices): void => {
+  validateAndGetDevices([device, ...devices!] as Devices)
 }
 
 export const validateAndGetConfigObject = (config: Config): object => {
@@ -128,8 +128,8 @@ export const validateAndGetConfigObject = (config: Config): object => {
     throw Error('Configuration object must agreed the defined schema')
   }
 
-  const pins: object = validateAndGetPinSettings(config.pins)
-  const dependencies: object = validateAndGetPinDependencies(pins, config.dependencies)
+  const pins: object = validateAndGetDevices(config.devices)
+  const dependencies: object = validateAndGetDependencies(pins, config.dependencies)
 
   return {
     pins,

@@ -1,2 +1,2 @@
 export { Board } from './board'
-export { validatePins } from './utils/config'
+export { validateDevice } from './utils/config'
