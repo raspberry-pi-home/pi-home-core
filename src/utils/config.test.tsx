@@ -14,6 +14,7 @@ describe('devices', () => {
           pin: 17,
           type: 'led',
         }],
+        dependencies: [],
       })
     }).toThrowError('Review your "devices" configuration, seems there are duplicated pins')
   })
@@ -30,24 +31,13 @@ describe('devices', () => {
           pin: 18,
           type: 'led',
         }],
+        dependencies: [],
       })
     }).toThrowError('Review your "devices" configuration, seems there are duplicated labels')
   })
 })
 
 describe('dependencies', () => {
-  test('should throw an error when dependencies object is missing', () => {
-    expect(() => {
-      validateAndGetConfigObject({
-        devices: [{
-          label: 'Led 17',
-          pin: 17,
-          type: 'led',
-        }],
-      })
-    }).toThrowError('No "dependencies" provided')
-  })
-
   test('should throw an error when inputPin and outputPin are the same', () => {
     expect(() => {
       validateAndGetConfigObject({
@@ -103,6 +93,26 @@ describe('dependencies', () => {
       })
     }).toThrowError('Review your "dependencies" configuration, seems there is "outputPin" that is mapped to an invalid value')
   })
+
+  test('should throw an error when the input or outputPin pin is out of range', () => {
+    expect(() => {
+      validateAndGetConfigObject({
+        devices: [{
+          label: 'Led 17',
+          pin: 17,
+          type: 'led',
+        }, {
+          label: 'Button 22',
+          pin: 22,
+          type: 'onOffButton',
+        }],
+        dependencies: [{
+          inputPin: 99,
+          outputPin: 16,
+        }],
+      })
+    }).toThrowError('Configuration object must agreed the defined schema')
+  })
 })
 
 describe('validateDevice', () => {
@@ -157,6 +167,15 @@ describe('validateDevice', () => {
       }])
     }).not.toThrow()
   })
+})
+
+test('should pass (empty)', () => {
+  expect(() => {
+    validateAndGetConfigObject({
+      devices: [],
+      dependencies: [],
+    })
+  }).not.toThrow()
 })
 
 test('should pass', () => {

@@ -18,16 +18,16 @@ interface Dependency {
   outputPin: number
 }
 
-type Devices = Array<Device>
-type Dependencies = Array<Dependency>
+export type Devices = Array<Device>
+export type Dependencies = Array<Dependency>
 
 export interface Config {
-  devices?: Devices
-  dependencies?: Array<Dependency>
+  devices: Devices
+  dependencies: Dependencies
 }
 
-const validateAndGetDevices = (devices?: Devices): object => {
-  if (_.isUndefined(devices) || _.isEmpty(devices)) {
+const validateAndGetDevices = (devices: Devices): Devices => {
+  if (_.isUndefined(devices)) {
     throw Error('No "devices" provided')
   }
 
@@ -47,27 +47,26 @@ const validateAndGetDevices = (devices?: Devices): object => {
     throw Error('Review your "devices" configuration, seems there are duplicated labels')
   }
 
+  // @ts-ignore TS2345
   return _.chain(AVAILABLE_PINS).reduce((memo, pin) => {
     const device = _.find(devices, { pin })
 
     if (device) {
-      return {
+      return [
         ...memo,
-        [pin]: device,
-      }
+        device,
+      ]
     }
 
-    return {
+    return [
       ...memo,
-      [pin]: {
-        pin,
-      },
-    }
-  }, {}).value()
+      { pin },
+    ]
+  }, []).value()
 }
 
-const validateAndGetDependencies = (devices: object, dependencies?: Dependencies): object => {
-  if (_.isUndefined(dependencies) || _.isEmpty(dependencies)) {
+const validateAndGetDependencies = (devices: Devices, dependencies: Dependencies): Dependencies => {
+  if (_.isUndefined(dependencies)) {
     throw Error('No "dependencies" provided')
   }
 
@@ -85,15 +84,15 @@ const validateAndGetDependencies = (devices: object, dependencies?: Dependencies
   }
 
   _.each(dependencies, ({ inputPin, outputPin }) => {
-    // @ts-ignore TS7053
-    const validInputPin = _.includes(AVAILABLE_DEVICE_TYPE_INPUT, devices[inputPin].type)
+    // @ts-ignore TS2532
+    const validInputPin = _.includes(AVAILABLE_DEVICE_TYPE_INPUT, _.find(devices, { pin: inputPin }).type)
 
     if (!validInputPin) {
       throw Error('Review your "dependencies" configuration, seems there is "inputPin" that is mapped to an invalid value')
     }
 
-    // @ts-ignore TS7053
-    const validOutputPin = _.includes(AVAILABLE_DEVICE_TYPE_OUTPUT, devices[outputPin].type)
+    // @ts-ignore TS2532
+    const validOutputPin = _.includes(AVAILABLE_DEVICE_TYPE_OUTPUT, _.find(devices, { pin: outputPin }).type)
 
     if (!validOutputPin) {
       throw Error('Review your "dependencies" configuration, seems there is "outputPin" that is mapped to an invalid value')
@@ -107,7 +106,7 @@ export const validateDevice = (device: Device, devices?: Devices): void => {
   validateAndGetDevices([device, ...devices!] as Devices)
 }
 
-export const validateAndGetConfigObject = (config: Config): object => {
+export const validateAndGetConfigObject = (config: Config): Config => {
   if (_.isUndefined(config) || _.isEmpty(config)) {
     throw Error('Missing configuration object')
   }
@@ -128,11 +127,11 @@ export const validateAndGetConfigObject = (config: Config): object => {
     throw Error('Configuration object must agreed the defined schema')
   }
 
-  const pins: object = validateAndGetDevices(config.devices)
-  const dependencies: object = validateAndGetDependencies(pins, config.dependencies)
+  const devices: Devices = validateAndGetDevices(config.devices)
+  const dependencies: Dependencies = validateAndGetDependencies(devices, config.dependencies)
 
   return {
-    pins,
+    devices,
     dependencies,
   }
 }
