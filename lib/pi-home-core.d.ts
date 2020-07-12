@@ -113,4 +113,5 @@ declare module "index" {
     export { Board } from "board";
     export { validateDevice } from "utils/config";
 }
+declare module 'pi-home-core';
 declare module "utils/config.test" { }
