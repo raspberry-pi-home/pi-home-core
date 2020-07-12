@@ -7,13 +7,13 @@ import {
 } from '../constants'
 import validateBoardSchema from '../schemas/boardSchemaValidator'
 
-interface Device {
+type Device = {
   label: string
   pin: number
   type: string
 }
 
-interface Dependency {
+type Dependency = {
   inputPin: number
   outputPin: number
 }
@@ -21,7 +21,7 @@ interface Dependency {
 export type Devices = Array<Device>
 export type Dependencies = Array<Dependency>
 
-export interface Config {
+export type Config = {
   devices: Devices
   dependencies: Dependencies
 }
@@ -101,6 +101,8 @@ const validateAndGetDependencies = (devices: Devices, dependencies: Dependencies
 
   return dependencies
 }
+
+// TODO: validate dependencies
 
 export const validateDevice = (device: Device, devices?: Devices): void => {
   validateAndGetDevices([device, ...devices!] as Devices)

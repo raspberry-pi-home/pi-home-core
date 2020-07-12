@@ -5,6 +5,13 @@ test('basic instantiation', () => {
   expect(() => new Board(validBoard)).not.toThrow()
 })
 
+test('basic instantiation (empty)', () => {
+  expect(() => new Board({
+    devices: [],
+    dependencies: [],
+  })).not.toThrow()
+})
+
 test('devices', () => {
   expect(new Board(validBoard).devices()).toEqual([
     { pin: 2 },

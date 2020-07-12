@@ -12,6 +12,16 @@ export class Board {
 
   dependencies = (): Dependencies => this.config.dependencies
 
+  availableTypesAndDirections = (): object => ({
+    led: 'out',
+    onOffButton: 'in',
+    pushButton: 'in',
+  })
+
+  changeStatus = (pin: number): number => {
+    return pin
+  }
+
   run = (): void => {
 
   }

@@ -13,6 +13,7 @@
     "url": "git+https://github.com/raspberry-pi-home/pi-home-core.git"
   },
   "main": "lib/pi-home-core.min.js",
+  "types": "lib/pi-home-core.d.ts",
   "engines": {
     "node": ">=8"
   },
@@ -43,10 +44,8 @@
   "scripts": {
     "lint": "eslint 'src/**/*.{js,ts,tsx}'",
     "type-check": "tsc --noEmit",
-    "type-check:watch": "npm run type-check -- --watch",
-    "build": "npm run build:js:development && npm run build:js:production",
-    "build:types": "tsc --emitDeclarationOnly",
-    "build:js:babel": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
+    "build": "npm run build:types && npm run build:js:development && npm run build:js:production",
+    "build:types": "tsc --emitDeclarationOnly --outFile lib/pi-home-core.d.ts",
     "build:js:development": "webpack --mode=development",
     "build:js:production": "webpack --mode=production",
     "test": "jest --config=jest.config.json",
