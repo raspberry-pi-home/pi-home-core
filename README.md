@@ -6,7 +6,6 @@
 
 ```
 npm install --save https://github.com/raspberry-pi-home/pi-home-core.git
-npm install --save @types/pi-home-core@https://github.com/raspberry-pi-home/pi-home-core.git
 ```
 
 ```

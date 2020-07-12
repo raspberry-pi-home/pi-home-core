@@ -45,7 +45,7 @@
     "lint": "eslint 'src/**/*.{js,ts,tsx}'",
     "type-check": "tsc --noEmit",
     "build": "npm run build:types && npm run build:js:development && npm run build:js:production",
-    "build:types": "tsc --emitDeclarationOnly --outFile lib/pi-home-core.d.ts",
+    "build:types": "tsc -d src/pi-home-core.ts --emitDeclarationOnly --outFile lib/pi-home-core.d.ts",
     "build:js:development": "webpack --mode=development",
     "build:js:production": "webpack --mode=production",
     "test": "jest --config=jest.config.json",
