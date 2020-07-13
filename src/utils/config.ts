@@ -102,17 +102,16 @@ const validateAndGetDependencies = (devices: Devices, dependencies: Dependencies
   return dependencies
 }
 
-export const validateConfig = (config: Config): boolean => {
+export const validateConfig = (config: Config): void | string => {
   try {
     validateAndGetConfigObject(config)
-    return true
-  } catch (error) {
+  } catch (err) {
     if (process.env.DEBUG) {
       // eslint-disable-next-line no-console
-      console.error(error)
+      console.error(err.stack)
     }
+    return err
   }
-  return false
 }
 
 export const validateAndGetConfigObject = (config: Config): Config => {

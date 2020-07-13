@@ -52,7 +52,7 @@ Runs the board
 Toggle the status of the device tied to the pin
 
 ### validateConfig(config)
-Validates if the config is valid and return true or false
+Validates if the config is valid and return the error message in case of error
 
 ---
 
