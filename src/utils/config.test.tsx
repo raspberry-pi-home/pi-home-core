@@ -1,4 +1,4 @@
-import { validateAndGetConfigObject, validateDevice } from './config'
+import { validateAndGetConfigObject } from './config'
 const validBoard = require('../__fixtures__/board.json')
 
 describe('devices', () => {
@@ -112,60 +112,6 @@ describe('dependencies', () => {
         }],
       })
     }).toThrowError('Configuration object must agreed the defined schema')
-  })
-})
-
-describe('validateDevice', () => {
-  test('should throw an error when pins are duplicated', () => {
-    expect(() => {
-      validateDevice({
-        'label': 'Led 17',
-        'pin': 17,
-        'type': 'led',
-      }, [{
-        'label': 'Led 18',
-        'pin': 17,
-        'type': 'led',
-      }])
-    }).toThrowError('Review your "devices" configuration, seems there are duplicated pins')
-  })
-
-  test('should throw an error when labels are duplicated', () => {
-    expect(() => {
-      validateDevice({
-        'label': 'Led 17',
-        'pin': 17,
-        'type': 'led',
-      }, [{
-        'label': 'Led 17',
-        'pin': 18,
-        'type': 'led',
-      }])
-    }).toThrowError('Review your "devices" configuration, seems there are duplicated labels')
-  })
-
-  test('should pass', () => {
-    expect(() => {
-      validateDevice({
-        'label': 'Led 17',
-        'pin': 17,
-        'type': 'led',
-      }, [{
-        'label': 'Led 18',
-        'pin': 18,
-        'type': 'led',
-      },
-      {
-        'label': 'Button 22',
-        'pin': 22,
-        'type': 'onOffButton',
-      },
-      {
-        'label': 'Push Button 27',
-        'pin': 27,
-        'type': 'pushButton',
-      }])
-    }).not.toThrow()
   })
 })
 

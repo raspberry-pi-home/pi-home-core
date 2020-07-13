@@ -51,8 +51,8 @@ Runs the board
 #### changeStatus(pin)
 Toggle the status of the device tied to the pin
 
-### validateDevice(device, devices)
-Validates if the device is valid related to the other devices
+### validateConfig(config)
+Validates if the config is valid and return true or false
 
 ---
 
