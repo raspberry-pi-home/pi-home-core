@@ -135,5 +135,5 @@ export const validateAndGetConfigObject = (config: Config): Config => {
   return {
     devices,
     dependencies,
-  }
+  } as Config
 }

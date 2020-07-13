@@ -2,18 +2,22 @@ import { Board } from './board'
 const validBoard = require('./__fixtures__/board.json')
 
 test('basic instantiation', () => {
-  expect(() => new Board(validBoard)).not.toThrow()
+  const board = new Board()
+  expect(() => board.setConfig(validBoard)).not.toThrow()
 })
 
 test('basic instantiation (empty)', () => {
-  expect(() => new Board({
+  const board = new Board()
+  expect(() => board.setConfig({
     devices: [],
     dependencies: [],
   })).not.toThrow()
 })
 
 test('devices', () => {
-  expect(new Board(validBoard).devices()).toEqual([
+  const board = new Board()
+  board.setConfig(validBoard)
+  expect(board.devices()).toEqual([
     { pin: 2 },
     { pin: 3 },
     { pin: 4 },
@@ -44,7 +48,9 @@ test('devices', () => {
 })
 
 test('dependencies', () => {
-  expect(new Board(validBoard).dependencies()).toEqual([
+  const board = new Board()
+  board.setConfig(validBoard)
+  expect(board.dependencies()).toEqual([
     { inputPin: 22, outputPin: 17 },
     { inputPin: 27, outputPin: 18 },
   ])

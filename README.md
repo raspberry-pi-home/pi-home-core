@@ -33,11 +33,23 @@ try {
 
 ## Documentation
 
-### Board(config)
+### Board()
 Creates a new Board component which will handle all the interactions between the inputs and outputs
 
-#### run()
+#### setConfig(config)
+Sets the configuration for the board
+
+#### devices()
+Returns all the configured devices
+
+#### dependencies()
+Returns all the configured dependencies
+
+#### availableTypesAndDirections()
 Runs the board
+
+#### changeStatus(pin)
+Toggle the status of the device tied to the pin
 
 ### validateDevice(device, devices)
 Validates if the device is valid related to the other devices
