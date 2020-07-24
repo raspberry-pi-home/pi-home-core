@@ -7,10 +7,13 @@ import {
 } from '../constants'
 import validateBoardSchema from '../schemas/boardSchemaValidator'
 
-type Device = {
+type ValidationResponse = [boolean, null | string]
+
+export type Device = {
   label: string
   pin: number
   type: string
+  device?: object
 }
 
 type Dependency = {
@@ -102,15 +105,16 @@ const validateAndGetDependencies = (devices: Devices, dependencies: Dependencies
   return dependencies
 }
 
-export const validateConfig = (config: Config): void | string => {
+export const validateConfig = (config: Config): ValidationResponse => {
   try {
     validateAndGetConfigObject(config)
+    return [true, null]
   } catch (err) {
     if (process.env.DEBUG) {
       // eslint-disable-next-line no-console
       console.error(err.stack)
     }
-    return err
+    return [false, err]
   }
 }
 
