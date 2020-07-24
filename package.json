@@ -38,7 +38,7 @@
   "dependencies": {
     "@types/lodash": "^4.14.155",
     "jsonschema": "^1.2.6",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "pi-home-gpio": "git+https://github.com/raspberry-pi-home/pi-home-gpio.git"
   },
   "scripts": {
