@@ -33,17 +33,17 @@ test('devices', () => {
     { pin: 14 },
     { pin: 15 },
     { pin: 16 },
-    { label: 'Led 17', pin: 17, type: 'led', status: 0 },
-    { label: 'Led 18', pin: 18, type: 'led', status: 0 },
+    { pin: 17, type: 'led', label: 'Led 17', status: 0 },
+    { pin: 18, type: 'led', label: 'Led 18', status: 0 },
     { pin: 19 },
     { pin: 20 },
     { pin: 21 },
-    { label: 'Button 22', pin: 22, type: 'onOffButton' },
+    { pin: 22, type: 'onOffButton', label: 'Button 22' },
     { pin: 23 },
     { pin: 24 },
     { pin: 25 },
     { pin: 26 },
-    { label: 'Push Button 27', pin: 27, type: 'pushButton' },
+    { pin: 27, type: 'pushButton', label: 'Push Button 27' },
   ])
 })
 
@@ -54,4 +54,12 @@ test('dependencies', () => {
     { inputPin: 22, outputPin: 17 },
     { inputPin: 27, outputPin: 18 },
   ])
+})
+
+test('changeStatus', () => {
+  const board = new Board()
+  board.setConfig(validBoard)
+  expect(board.device(17)).toEqual({ pin: 17, type: 'led', label: 'Led 17', status: 0 })
+  board.changeStatus(17)
+  expect(board.device(17)).toEqual({ pin: 17, type: 'led', label: 'Led 17', status: 1 })
 })

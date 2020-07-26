@@ -6,13 +6,13 @@ describe('devices', () => {
     expect(() => {
       validateAndGetConfigObject({
         devices: [{
+          pin: 17,
+          type: 'led',
           label: 'Led 17',
-          pin: 17,
-          type: 'led',
         }, {
-          label: 'Led 18',
           pin: 17,
           type: 'led',
+          label: 'Led 18',
         }],
         dependencies: [],
       })
@@ -23,13 +23,13 @@ describe('devices', () => {
     expect(() => {
       validateAndGetConfigObject({
         devices: [{
-          label: 'Led 17',
           pin: 17,
           type: 'led',
-        }, {
           label: 'Led 17',
+        }, {
           pin: 18,
           type: 'led',
+          label: 'Led 17',
         }],
         dependencies: [],
       })
@@ -42,9 +42,9 @@ describe('dependencies', () => {
     expect(() => {
       validateAndGetConfigObject({
         devices: [{
-          label: 'Led 17',
           pin: 17,
           type: 'led',
+          label: 'Led 17',
         }],
         dependencies: [{
           inputPin: 22,
@@ -58,13 +58,13 @@ describe('dependencies', () => {
     expect(() => {
       validateAndGetConfigObject({
         devices: [{
-          label: 'Led 17',
           pin: 17,
           type: 'led',
+          label: 'Led 17',
         }, {
-          label: 'Button 22',
           pin: 22,
           type: 'onOffButton',
+          label: 'Button 22',
         }],
         dependencies: [{
           inputPin: 17,
@@ -78,13 +78,13 @@ describe('dependencies', () => {
     expect(() => {
       validateAndGetConfigObject({
         devices: [{
-          label: 'Led 17',
           pin: 17,
           type: 'led',
+          label: 'Led 17',
         }, {
-          label: 'Button 22',
           pin: 22,
           type: 'onOffButton',
+          label: 'Button 22',
         }],
         dependencies: [{
           inputPin: 22,
@@ -98,13 +98,13 @@ describe('dependencies', () => {
     expect(() => {
       validateAndGetConfigObject({
         devices: [{
-          label: 'Led 17',
           pin: 17,
           type: 'led',
+          label: 'Led 17',
         }, {
-          label: 'Button 22',
           pin: 22,
           type: 'onOffButton',
+          label: 'Button 22',
         }],
         dependencies: [{
           inputPin: 99,

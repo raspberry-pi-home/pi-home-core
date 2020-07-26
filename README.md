@@ -11,24 +11,17 @@ npm install --save https://github.com/raspberry-pi-home/pi-home-core.git
 ```
 import { Board } from 'pi-home-core'
 
-try {
-  const board = new Board(config)
-  board.run()
-} catch(e) {
-  // configuration invalid or error bootstrapping the app
-  console.log(e)
-}
-```
+const board = new Board()
 
-```
-import { validateDevice } from 'pi-home-core'
-
-try {
-  validateDevice(device, devices)
-} catch(e) {
-  // device invalid
-  console.log(e)
+const [valid, error] = board.validateConfig(config)
+if (!valid) {
+  // config invalid
+  console.log(error)
 }
+
+board.setConfig(config)
+
+board.changeStatus(17)
 ```
 
 ## Documentation
@@ -36,23 +29,35 @@ try {
 ### Board()
 Creates a new Board component which will handle all the interactions between the inputs and outputs
 
+#### validateConfig(config)
+Validates the config is valid
+Returns an array [valid, error] as [true/false, undefined/string]
+
 #### setConfig(config)
 Sets the configuration for the board
+Throws an error if the config is invalid
 
 #### devices()
-Returns all the configured devices
+Returns all the available devices
+For the configured ones, it returns its properties
 
 #### dependencies()
 Returns all the configured dependencies
 
-#### availableTypesAndDirections()
-Runs the board
+#### device(pin)
+Returns a device
+If is configured, it returns its properties
 
 #### changeStatus(pin)
 Toggle the status of the device tied to the pin
 
-### validateConfig(config)
-Validates if the config is valid and return the error message in case of error
+#### availableTypesAndDirections()
+Returns the available device types and its direction. i.e.:
+```
+led: 'out',
+onOffButton: 'in',
+pushButton: 'in',
+```
 
 ---
 
@@ -73,9 +78,9 @@ Validates if the config is valid and return the error message in case of error
 #### - device
 ```
 {
-  label: <label>,
   pin: <pin_number>,
-  type: <device_type>
+  type: <device_type>,
+  label: <label>
 }
 ```
 

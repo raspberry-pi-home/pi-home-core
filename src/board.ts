@@ -1,9 +1,9 @@
 import { Led, OnOffButton, PushButton } from 'pi-home-gpio'
 
-import { validateAndGetConfigObject } from './utils/config'
-import type { Config, Dependencies, Device, Devices } from './utils/config'
+import { validateAndGetConfigObject, validateConfig as validateConfiguration } from './utils/config'
+import type { Config, Dependencies, Device, Devices, ValidationResponse } from './utils/config'
 
-const deviceTypes: object = {
+const deviceTypes: { [key: string]: object } = {
   led: Led,
   onOffButton: OnOffButton,
   pushButton: PushButton,
@@ -12,7 +12,7 @@ const deviceTypes: object = {
 export class Board {
   private config: Config = {} as Config
   private configured: boolean = false
-  private configuredDevices: object = {}
+  private configuredDevices: { [key: number]: object } = {}
 
   private configureBoard = () => {
     // @ts-ignore TS276
@@ -51,6 +51,8 @@ export class Board {
     this.configured = true
   }
 
+  validateConfig = (config: Config): ValidationResponse => validateConfiguration(config)
+
   setConfig = (config: Config): void => {
     this.config = validateAndGetConfigObject(config)
     this.configureBoard()
@@ -67,14 +69,16 @@ export class Board {
 
       if (type) {
         // @ts-ignore TS7053
-        const device = this.configuredDevices[pin].device
+        const configuredDevice: object = this.configuredDevices[pin] as object
 
-        if (type === 'led') {
+        // @ts-ignore TS2339
+        if (configuredDevice && configuredDevice.device && configuredDevice.type === 'led') {
           return [
             ...memo,
             {
               ...deviceConfiguration,
-              status: device.value(),
+              // @ts-ignore TS2339
+              status: configuredDevice.device.value(),
             } as Device,
           ] as Devices
         }
@@ -97,11 +101,32 @@ export class Board {
     return this.config.dependencies
   }
 
-  availableTypesAndDirections = (): object => ({
-    led: 'out',
-    onOffButton: 'in',
-    pushButton: 'in',
-  })
+  device = (pin: number): Device => {
+    if (!this.configured) {
+      throw Error('Board is not configured')
+    }
+
+    // @ts-ignore TS276
+    const device: Device = this.config.devices.filter(deviceConfiguration => deviceConfiguration.pin === pin)[0] as Device
+
+    if (!device) {
+      throw Error('Device is not configured')
+    }
+
+    // @ts-ignore TS7053
+    const configuredDevice: object = this.configuredDevices[pin] as object
+
+    // @ts-ignore TS2339
+    if (configuredDevice && configuredDevice.device && configuredDevice.type === 'led') {
+      return {
+        ...device,
+        // @ts-ignore TS2339
+        status: configuredDevice.device.value(),
+      } as Device
+    }
+
+    return device as Device
+  }
 
   changeStatus = (pin: number): number => {
     if (!this.configured) {
@@ -109,17 +134,26 @@ export class Board {
     }
 
     // @ts-ignore TS7053
-    const device = this.configuredDevices[pin]
+    const device: object = this.configuredDevices[pin] as object
     if (!device) {
       throw Error('Device is not configured')
     }
 
+    // @ts-ignore TS2339
     if (device.type !== 'led') {
       throw Error('Cannot change the status in this type of device')
     }
 
+    // @ts-ignore TS2339
     device.device.toggle()
 
+    // @ts-ignore TS2339
     return device.device.value()
   }
+
+  availableTypesAndDirections = (): object => ({
+    led: 'out',
+    onOffButton: 'in',
+    pushButton: 'in',
+  })
 }

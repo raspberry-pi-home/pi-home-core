@@ -7,7 +7,7 @@ import {
 } from '../constants'
 import validateBoardSchema from '../schemas/boardSchemaValidator'
 
-type ValidationResponse = [boolean, null | string]
+export type ValidationResponse = [boolean, null | string]
 
 export type Device = {
   label: string
