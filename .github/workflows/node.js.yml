@@ -47,7 +47,7 @@ jobs:
       with:
         author_name: Gustavo Ingrassia
         author_email: gustavo.ingrassia@gmail.com
-        message: "build lib"
+        message: "build app"
         add: "lib"
         force: true
       env:
