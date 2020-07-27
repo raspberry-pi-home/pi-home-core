@@ -12,7 +12,7 @@
     "type": "git",
     "url": "git+https://github.com/raspberry-pi-home/pi-home-core.git"
   },
-  "main": "lib/pi-home-core.min.js",
+  "main": "lib/pi-home-core.js",
   "types": "lib/pi-home-core.d.ts",
   "engines": {
     "node": ">=8"
