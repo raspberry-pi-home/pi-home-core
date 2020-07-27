@@ -22,5 +22,12 @@ module.exports = (env, argv) => ({
       exclude: /node_modules/,
       loader: 'babel-loader'
     }]
+  },
+  externals: {
+    epoll: {
+      commonjs: 'epoll',
+      commonjs2: 'epoll',
+      amd: 'epoll'
+    }
   }
 });
