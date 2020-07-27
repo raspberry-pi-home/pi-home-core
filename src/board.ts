@@ -110,7 +110,7 @@ export class Board {
     const device: Device = this.config.devices.filter(deviceConfiguration => deviceConfiguration.pin === pin)[0] as Device
 
     if (!device) {
-      throw Error('Device is not configured')
+      throw Error('Device not found')
     }
 
     // @ts-ignore TS7053
