@@ -18,9 +18,9 @@ test('devices', () => {
   const board = new Board()
   board.setConfig(validBoard)
   expect(board.devices()).toEqual([
-    { pin: 2 },
-    { pin: 3 },
-    { pin: 4 },
+    { pin: 2, type: 'led', label: 'Led 2', status: 0 },
+    { pin: 3, type: 'led', label: 'Led 3', status: 0 },
+    { pin: 4, type: 'led', label: 'Led 4', status: 0 },
     { pin: 5 },
     { pin: 6 },
     { pin: 7 },
@@ -33,33 +33,67 @@ test('devices', () => {
     { pin: 14 },
     { pin: 15 },
     { pin: 16 },
-    { pin: 17, type: 'led', label: 'Led 17', status: 0 },
-    { pin: 18, type: 'led', label: 'Led 18', status: 0 },
+    { pin: 17 },
+    { pin: 18 },
     { pin: 19 },
-    { pin: 20 },
-    { pin: 21 },
-    { pin: 22, type: 'onOffButton', label: 'Button 22' },
+    { pin: 20, type: 'onOffButton', label: 'Button 20' },
+    { pin: 21, type: 'pushButton', label: 'Button 21' },
+    { pin: 22 },
     { pin: 23 },
     { pin: 24 },
     { pin: 25 },
     { pin: 26 },
-    { pin: 27, type: 'pushButton', label: 'Push Button 27' },
+    { pin: 27 },
   ])
+})
+
+test('device', () => {
+  const board = new Board()
+  board.setConfig(validBoard)
+  expect(board.device(2)).toEqual({
+    pin: 2,
+    type: 'led',
+    label: 'Led 2',
+    status: 0,
+    dependencies: [{ pin: 20, type: 'onOffButton', label: 'Button 20' }],
+  })
+  expect(board.device(20)).toEqual({
+    pin: 20,
+    type: 'onOffButton',
+    label: 'Button 20',
+    dependencies: [
+      { pin: 2, type: 'led', label: 'Led 2' },
+      { pin: 3, type: 'led', label: 'Led 3' },
+    ],
+  })
 })
 
 test('dependencies', () => {
   const board = new Board()
   board.setConfig(validBoard)
   expect(board.dependencies()).toEqual([
-    { inputPin: 22, outputPin: 17 },
-    { inputPin: 27, outputPin: 18 },
+    { inputPin: 20, outputPin: 2 },
+    { inputPin: 20, outputPin: 3 },
+    { inputPin: 21, outputPin: 4 },
   ])
 })
 
 test('changeStatus', () => {
   const board = new Board()
   board.setConfig(validBoard)
-  expect(board.device(17)).toEqual({ pin: 17, type: 'led', label: 'Led 17', status: 0 })
-  board.changeStatus(17)
-  expect(board.device(17)).toEqual({ pin: 17, type: 'led', label: 'Led 17', status: 1 })
+  expect(board.device(2)).toEqual({
+    pin: 2,
+    type: 'led',
+    label: 'Led 2',
+    status: 0,
+    dependencies: [{ pin: 20, type: 'onOffButton', label: 'Button 20' }],
+  })
+  board.changeStatus(2)
+  expect(board.device(2)).toEqual({
+    pin: 2,
+    type: 'led',
+    label: 'Led 2',
+    status: 1,
+    dependencies: [{ pin: 20, type: 'onOffButton', label: 'Button 20' }],
+  })
 })

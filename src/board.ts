@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import { isAccessible as boardIsAccessible, Led, OnOffButton, PushButton } from 'pi-home-gpio'
 
 import { validateAndGetConfigObject, validateConfig as validateConfiguration } from './utils/config'
@@ -9,8 +10,14 @@ const deviceTypes: { [key: string]: object } = {
   pushButton: PushButton,
 }
 
+const availableTypesAndDirections: { [key: string]: string } = {
+  led: 'out',
+  onOffButton: 'in',
+  pushButton: 'in',
+}
+
 export class Board {
-  private isAccessible: boolean = boardIsAccessible 
+  private isAccessible: boolean = boardIsAccessible
   private config: Config = {} as Config
   private configured: boolean = false
   private configuredDevices: { [key: number]: object } = {}
@@ -69,28 +76,24 @@ export class Board {
 
     // @ts-ignore TS276
     const devices = this.config.devices.reduce((memo, deviceConfiguration) => {
-      const { pin, type } = deviceConfiguration
+      let device = deviceConfiguration
 
-      if (type) {
-        // @ts-ignore TS7053
-        const configuredDevice: object = this.configuredDevices[pin] as object
+      if (device.type) {
+        const configuredDevice: Device = this.configuredDevices[device.pin] as Device
 
-        // @ts-ignore TS2339
+        // add status
         if (configuredDevice && configuredDevice.device && configuredDevice.type === 'led') {
-          return [
-            ...memo,
-            {
-              ...deviceConfiguration,
-              // @ts-ignore TS2339
-              status: configuredDevice.device.value(),
-            } as Device,
-          ] as Devices
+          device = {
+            ...device,
+            // @ts-ignore TS2339
+            status: configuredDevice.device.value(),
+          } as Device
         }
       }
 
       return [
         ...memo,
-        deviceConfiguration as Device,
+        device as Device,
       ] as Devices
     }, []) as Devices
 
@@ -111,22 +114,43 @@ export class Board {
     }
 
     // @ts-ignore TS276
-    const device: Device = this.config.devices.filter(deviceConfiguration => deviceConfiguration.pin === pin)[0] as Device
+    let device: Device = this.config.devices.filter(deviceConfiguration => deviceConfiguration.pin === pin)[0] as Device
 
     if (!device) {
       throw Error('Device not found')
     }
 
     // @ts-ignore TS7053
-    const configuredDevice: object = this.configuredDevices[pin] as object
+    const configuredDevice: Device = this.configuredDevices[pin] as Device
 
-    // @ts-ignore TS2339
-    if (configuredDevice && configuredDevice.device && configuredDevice.type === 'led') {
-      return {
-        ...device,
-        // @ts-ignore TS2339
-        status: configuredDevice.device.value(),
-      } as Device
+    if (configuredDevice) {
+      // add status
+      if (configuredDevice.device && configuredDevice.type === 'led') {
+        device = {
+          ...device,
+          // @ts-ignore TS2339
+          status: configuredDevice.device.value(),
+        } as Device
+      }
+
+      // add dependencies
+      if (this.config.dependencies) {
+        const direction = availableTypesAndDirections[device.type]
+
+        let devicePins: Array<number> = []
+        if (direction == 'in') {
+          devicePins = _.chain(this.config.dependencies).filter({ inputPin: device.pin }).map('outputPin').value()
+        } else if (direction == 'out') {
+          devicePins = _.chain(this.config.dependencies).filter({ outputPin: device.pin }).map('inputPin').value()
+        }
+
+        const dependencies:Devices = devicePins.map(devicePin => _.find(this.config.devices, ({ pin: configDevicePin }) => configDevicePin === devicePin) as Device)
+
+        device = {
+          ...device,
+          dependencies,
+        } as Device
+      }
     }
 
     return device as Device
@@ -154,10 +178,4 @@ export class Board {
     // @ts-ignore TS2339
     return device.device.value()
   }
-
-  availableTypesAndDirections = (): object => ({
-    led: 'out',
-    onOffButton: 'in',
-    pushButton: 'in',
-  })
 }

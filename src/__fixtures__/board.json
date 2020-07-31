@@ -1,34 +1,43 @@
 {
   "devices": [
     {
-      "pin": 17,
+      "pin": 2,
       "type": "led",
-      "label": "Led 17"
+      "label": "Led 2"
     },
     {
-      "pin": 18,
+      "pin": 3,
       "type": "led",
-      "label": "Led 18"
+      "label": "Led 3"
     },
     {
-      "pin": 22,
+      "pin": 4,
+      "type": "led",
+      "label": "Led 4"
+    },
+    {
+      "pin": 20,
       "type": "onOffButton",
-      "label": "Button 22"
+      "label": "Button 20"
     },
     {
-      "pin": 27,
+      "pin": 21,
       "type": "pushButton",
-      "label": "Push Button 27"
+      "label": "Button 21"
     }
   ],
   "dependencies": [
     {
-      "inputPin": 22,
-      "outputPin": 17
+      "inputPin": 20,
+      "outputPin": 2
     },
     {
-      "inputPin": 27,
-      "outputPin": 18
+      "inputPin": 20,
+      "outputPin": 3
+    },
+    {
+      "inputPin": 21,
+      "outputPin": 4
     }
   ]
 }

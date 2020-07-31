@@ -51,14 +51,6 @@ If is configured, it returns its properties
 #### changeStatus(pin)
 Toggle the status of the device tied to the pin
 
-#### availableTypesAndDirections()
-Returns the available device types and its direction. i.e.:
-```
-led: 'out',
-onOffButton: 'in',
-pushButton: 'in',
-```
-
 ---
 
 ### Concepts
