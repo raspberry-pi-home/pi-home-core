@@ -10,6 +10,7 @@ const deviceTypes: { [key: string]: object } = {
 }
 
 export class Board {
+  private isAccessible: boolean = boardIsAccessible 
   private config: Config = {} as Config
   private configured: boolean = false
   private configuredDevices: { [key: number]: object } = {}
@@ -53,8 +54,6 @@ export class Board {
 
     this.configured = true
   }
-
-  isAccessible = (): boolean => boardIsAccessible 
 
   validateConfig = (config: Config): ValidationResponse => validateConfiguration(config)
 
