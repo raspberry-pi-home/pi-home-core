@@ -39,13 +39,16 @@ export class Board {
       // @ts-ignore TS7053
       const { type: inputDeviceType, device: inputDevice } = this.configuredDevices[inputPin]
       // @ts-ignore TS7053
-      const { type: outputDeviceType, device: outputDevice } = this.configuredDevices[outputPin]
+      const { device: outputDevice } = this.configuredDevices[outputPin]
 
-      if (outputDeviceType === 'onOffButton') {
-        outputDevice.onAction(inputDeviceType.value)
-      } else if (outputDeviceType === 'pushButton') {
-        outputDevice.onAction(inputDeviceType.toggle)
-      }
+      // @ts-ignore TS7006
+      inputDevice.onAction(value => {
+        if (inputDeviceType === 'onOffButton') {
+          outputDevice.value(value)
+        } else if (inputDeviceType === 'pushButton') {
+          outputDevice.toggle()
+        }
+      })
     })
 
     this.configured = true
