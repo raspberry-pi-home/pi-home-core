@@ -1,4 +1,4 @@
-import { Led, OnOffButton, PushButton } from 'pi-home-gpio'
+import { isAccessible as boardIsAccessible, Led, OnOffButton, PushButton } from 'pi-home-gpio'
 
 import { validateAndGetConfigObject, validateConfig as validateConfiguration } from './utils/config'
 import type { Config, Dependencies, Device, Devices, ValidationResponse } from './utils/config'
@@ -53,6 +53,8 @@ export class Board {
 
     this.configured = true
   }
+
+  isAccessible = (): boolean => boardIsAccessible 
 
   validateConfig = (config: Config): ValidationResponse => validateConfiguration(config)
 
