@@ -16,6 +16,51 @@ const availableTypesAndDirections: { [key: string]: string } = {
   pushButton: 'in',
 }
 
+const completeDeviceProperties = (board: object, deviceConfiguration: Device): Device => {
+  let device: Device = deviceConfiguration
+
+  if (device.type) {
+    // @ts-ignore TS7053
+    const configuredDevice: Device = board.configuredDevices[device.pin] as Device
+
+    if (configuredDevice) {
+      // add status
+      if (configuredDevice.device && configuredDevice.type === 'led') {
+        device = {
+          ...device,
+          // @ts-ignore TS2339
+          status: configuredDevice.device.value(),
+        } as Device
+      }
+
+      // add dependencies
+      // @ts-ignore TS7053
+      if (board.config.dependencies) {
+        const direction = availableTypesAndDirections[device.type]
+
+        let devicePins: Array<number> = []
+        if (direction == 'in') {
+          // @ts-ignore TS7053
+          devicePins = _.chain(board.config.dependencies).filter({ inputPin: device.pin }).map('outputPin').value()
+        } else if (direction == 'out') {
+          // @ts-ignore TS7053
+          devicePins = _.chain(board.config.dependencies).filter({ outputPin: device.pin }).map('inputPin').value()
+        }
+
+        // @ts-ignore TS7053
+        const dependencies:Devices = devicePins.map(devicePin => _.find(board.config.devices, ({ pin: configDevicePin }) => configDevicePin === devicePin) as Device)
+
+        device = {
+          ...device,
+          dependencies,
+        } as Device
+      }
+    }
+  }
+
+  return device
+}
+
 export class Board {
   private isAccessible: boolean = boardIsAccessible
   private config: Config = {} as Config
@@ -74,30 +119,7 @@ export class Board {
       throw Error('Board is not configured')
     }
 
-    // @ts-ignore TS276
-    const devices = this.config.devices.reduce((memo, deviceConfiguration) => {
-      let device = deviceConfiguration
-
-      if (device.type) {
-        const configuredDevice: Device = this.configuredDevices[device.pin] as Device
-
-        // add status
-        if (configuredDevice && configuredDevice.device && configuredDevice.type === 'led') {
-          device = {
-            ...device,
-            // @ts-ignore TS2339
-            status: configuredDevice.device.value(),
-          } as Device
-        }
-      }
-
-      return [
-        ...memo,
-        device as Device,
-      ] as Devices
-    }, []) as Devices
-
-    return devices
+    return this.config.devices.map((device) => completeDeviceProperties(this, device)) as Devices
   }
 
   dependencies = (): Dependencies => {
@@ -114,46 +136,13 @@ export class Board {
     }
 
     // @ts-ignore TS276
-    let device: Device = this.config.devices.filter(deviceConfiguration => deviceConfiguration.pin === pin)[0] as Device
+    const device: Device = this.config.devices.filter(deviceConfiguration => deviceConfiguration.pin === pin)[0] as Device
 
     if (!device) {
       throw Error('Device not found')
     }
 
-    // @ts-ignore TS7053
-    const configuredDevice: Device = this.configuredDevices[pin] as Device
-
-    if (configuredDevice) {
-      // add status
-      if (configuredDevice.device && configuredDevice.type === 'led') {
-        device = {
-          ...device,
-          // @ts-ignore TS2339
-          status: configuredDevice.device.value(),
-        } as Device
-      }
-
-      // add dependencies
-      if (this.config.dependencies) {
-        const direction = availableTypesAndDirections[device.type]
-
-        let devicePins: Array<number> = []
-        if (direction == 'in') {
-          devicePins = _.chain(this.config.dependencies).filter({ inputPin: device.pin }).map('outputPin').value()
-        } else if (direction == 'out') {
-          devicePins = _.chain(this.config.dependencies).filter({ outputPin: device.pin }).map('inputPin').value()
-        }
-
-        const dependencies:Devices = devicePins.map(devicePin => _.find(this.config.devices, ({ pin: configDevicePin }) => configDevicePin === devicePin) as Device)
-
-        device = {
-          ...device,
-          dependencies,
-        } as Device
-      }
-    }
-
-    return device as Device
+    return completeDeviceProperties(this, device) as Device
   }
 
   changeStatus = (pin: number): number => {

@@ -18,9 +18,27 @@ test('devices', () => {
   const board = new Board()
   board.setConfig(validBoard)
   expect(board.devices()).toEqual([
-    { pin: 2, type: 'led', label: 'Led 2', status: 0 },
-    { pin: 3, type: 'led', label: 'Led 3', status: 0 },
-    { pin: 4, type: 'led', label: 'Led 4', status: 0 },
+    {
+      pin: 2,
+      type: 'led',
+      label: 'Led 2',
+      status: 0,
+      dependencies: [{ pin: 20, type: 'onOffButton', label: 'Button 20' }],
+    },
+    {
+      pin: 3,
+      type: 'led',
+      label: 'Led 3',
+      status: 0,
+      dependencies: [{ pin: 20, type: 'onOffButton', label: 'Button 20' }],
+    },
+    {
+      pin: 4,
+      type: 'led',
+      label: 'Led 4',
+      status: 0,
+      dependencies: [{ pin: 21, type: 'pushButton', label: 'Button 21' }],
+    },
     { pin: 5 },
     { pin: 6 },
     { pin: 7 },
@@ -36,8 +54,23 @@ test('devices', () => {
     { pin: 17 },
     { pin: 18 },
     { pin: 19 },
-    { pin: 20, type: 'onOffButton', label: 'Button 20' },
-    { pin: 21, type: 'pushButton', label: 'Button 21' },
+    {
+      pin: 20,
+      type: 'onOffButton',
+      label: 'Button 20',
+      dependencies: [
+        { pin: 2, type: 'led', label: 'Led 2' },
+        { pin: 3, type: 'led', label: 'Led 3' },
+      ],
+    },
+    {
+      pin: 21,
+      type: 'pushButton',
+      label: 'Button 21',
+      dependencies: [
+        { pin: 4, type: 'led', label: 'Led 4' },
+      ],
+    },
     { pin: 22 },
     { pin: 23 },
     { pin: 24 },
