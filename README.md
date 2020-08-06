@@ -51,6 +51,12 @@ If is configured, it returns its properties
 #### changeStatus(pin)
 Toggle the status of the device tied to the pin
 
+#### isAccessible
+Returns if board is running on a raspberry-pi
+
+#### availableDeviceTypes
+Returns a list of available device types
+
 ---
 
 ### Concepts

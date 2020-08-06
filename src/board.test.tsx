@@ -130,3 +130,12 @@ test('changeStatus', () => {
     dependencies: [{ pin: 20, type: 'onOffButton', label: 'Button 20' }],
   })
 })
+
+test('availableDeviceTypes', () => {
+  const board = new Board()
+  expect(board.availableDeviceTypes).toEqual([
+    'led',
+    'onOffButton',
+    'pushButton',
+  ])
+})
