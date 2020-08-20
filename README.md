@@ -13,15 +13,13 @@ import { Board } from 'pi-home-core'
 
 const board = new Board()
 
-const [valid, error] = board.validateConfig(config)
-if (!valid) {
-  // config invalid
-  console.log(error)
-}
+board.addDevice({
+  pin: 2,
+  type: 'led',
+  label: 'Led 2',
+})
 
-board.setConfig(config)
-
-board.changeStatus(17)
+board.changeDeviceStatus(2)
 ```
 
 ## Documentation
@@ -29,49 +27,40 @@ board.changeStatus(17)
 ### Board()
 Creates a new Board component which will handle all the interactions between the inputs and outputs
 
-#### validateConfig(config)
-Validates the config is valid
-Returns an array [valid, error] as [true/false, undefined/string]
+#### getAvailableDevices(): list
+Returns a list of available pins per device type
 
-#### setConfig(config)
-Sets the configuration for the board
-Throws an error if the config is invalid
+#### getDevices(): devices
+Returns all the configured devices
 
-#### devices()
-Returns all the available devices
-For the configured ones, it returns its properties
-
-#### dependencies()
-Returns all the configured dependencies
-
-#### device(pin)
+#### getDevice(pin): device
 Returns a device
-If is configured, it returns its properties
 
-#### changeStatus(pin)
-Toggle the status of the device tied to the pin
+#### addDevice(device): device
+Adds a new device
+
+#### editDevice(pin, options): device
+Edits a new device
+Only available option: label
+
+#### deleteDevice(pin)
+Deletes a device
+
+#### changeDeviceStatus(pin): 0 | 1
+Toggle the status of the device
+
+#### linkDevices(dependency): void
+Links two devices
+
+#### unlinkDevices(dependency): void
+Unlinks two devices
 
 #### isAccessible
-Returns if board is running on a raspberry-pi
-
-#### availableDeviceTypes
-Returns a list of available device types
+Returns if board is running on a raspberry-pi or not
 
 ---
 
 ### Concepts
-
-#### - config
-```
-{
-  devices: [
-    ...device
-  ],
-  dependencies: [
-    ...dependency
-  ]
-}
-```
 
 #### - device
 ```
@@ -125,6 +114,3 @@ array of *device*
   outputPin: <pin_number>
 }
 ```
-
-#### - dependencies
-array of *dependency*

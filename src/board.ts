@@ -1,172 +1,227 @@
-import _ from 'lodash'
 import { isAccessible as boardIsAccessible, Led, OnOffButton, PushButton } from 'pi-home-gpio'
 
-import { validateAndGetConfigObject, validateConfig as validateConfiguration } from './utils/config'
-import type { Config, Dependencies, Device, Devices, ValidationResponse } from './utils/config'
+import { availablePins } from './constants'
+
+type DeviceStatus = 0 | 1
+export type DeviceType = 'led' | 'onOffButton' | 'pushButton'
+
+interface GpioDevice {
+  new (pin: number): GpioDevice
+  value(value?: DeviceStatus): DeviceStatus | void
+  toggle(): void
+  onAction(callback: (value: DeviceStatus) => void): void
+}
+
+interface InnerDevice {
+  pin: number
+  label: string
+  type: DeviceType
+}
+
+interface Device {
+  pin: number
+  label: string
+  type: DeviceType
+  gpioDevice?: GpioDevice
+  dependencies: InnerDevice[]
+  status?: DeviceStatus
+}
+
+interface DeviceAddProps {
+  pin: number
+  label: string
+  type: DeviceType
+}
+
+interface DeviceEditProps {
+  label: string
+}
+
+interface DependencyProps {
+  inputPin: number
+  outputPin: number
+}
 
 const deviceTypes: { [key: string]: object } = {
-  led: Led,
-  onOffButton: OnOffButton,
-  pushButton: PushButton,
+  led: Led as GpioDevice,
+  onOffButton: OnOffButton as GpioDevice,
+  pushButton: PushButton as GpioDevice,
 }
 
-const availableTypesAndDirections: { [key: string]: string } = {
-  led: 'out',
-  onOffButton: 'in',
-  pushButton: 'in',
-}
+const completeDeviceProperties = (deviceProps: Device): Device => {
+  let { gpioDevice, ...device } = deviceProps
 
-const completeDeviceProperties = (board: object, deviceConfiguration: Device): Device => {
-  let device: Device = deviceConfiguration
-
-  if (device.type) {
-    // @ts-ignore TS7053
-    const configuredDevice: Device = board.configuredDevices[device.pin] as Device
-
-    if (configuredDevice) {
-      // add status
-      if (configuredDevice.device && configuredDevice.type === 'led') {
-        device = {
-          ...device,
-          // @ts-ignore TS2339
-          status: configuredDevice.device.value(),
-        } as Device
-      }
-
-      // add dependencies
-      // @ts-ignore TS7053
-      if (board.config.dependencies) {
-        const direction = availableTypesAndDirections[device.type]
-
-        let devicePins: Array<number> = []
-        if (direction == 'in') {
-          // @ts-ignore TS7053
-          devicePins = _.chain(board.config.dependencies).filter({ inputPin: device.pin }).map('outputPin').value()
-        } else if (direction == 'out') {
-          // @ts-ignore TS7053
-          devicePins = _.chain(board.config.dependencies).filter({ outputPin: device.pin }).map('inputPin').value()
-        }
-
-        // @ts-ignore TS7053
-        const dependencies:Devices = devicePins.map(devicePin => _.find(board.config.devices, ({ pin: configDevicePin }) => configDevicePin === devicePin) as Device)
-
-        device = {
-          ...device,
-          dependencies,
-        } as Device
-      }
-    }
+  // add status for leds
+  if (device.type === 'led') {
+    device = {
+      ...device,
+      status: gpioDevice?.value(),
+    } as Device
   }
 
   return device
 }
 
 export class Board {
-  private config: Config = {} as Config
-  private configured: boolean = false
-  private configuredDevices: { [key: number]: object } = {}
+  private configuredDevices: { [key: number]: Device } = {}
 
-  private configureBoard = () => {
-    // @ts-ignore TS276
-    this.configuredDevices = this.config.devices.reduce((memo, deviceConfiguration) => {
-      const { pin, type } = deviceConfiguration
+  public isAccessible: boolean = boardIsAccessible
 
-      if (type) {
-        return {
-          ...memo,
-          [pin]: {
-            ...deviceConfiguration,
-            // @ts-ignore TS7053
-            device: new deviceTypes[type](pin),
-          } as Device,
-        }
-      }
+  getAvailableDevices = () => {
+    const usedPins = Object.values(this.configuredDevices).map(({ pin }) => pin)
+    const unUsedPins = availablePins.filter(pin => !usedPins.includes(pin))
 
-      return memo
-    }, {})
+    return Object.keys(deviceTypes).reduce((memo, type) => ({ ...memo, [type]: unUsedPins }), {})
+  }
 
-    this.config.dependencies.forEach(dependencyConfiguration => {
-      const { inputPin, outputPin } = dependencyConfiguration
+  getDevices = (): Device[] => {
+    return Object.values(this.configuredDevices).map(device => completeDeviceProperties(device)) as Device[]
+  }
 
-      // @ts-ignore TS7053
-      const { type: inputDeviceType, device: inputDevice } = this.configuredDevices[inputPin]
-      // @ts-ignore TS7053
-      const { device: outputDevice } = this.configuredDevices[outputPin]
+  getDevice = (pin: number): Device => {
+    const device = this.configuredDevices[pin]
+    if (!device) {
+      throw Error('device not found')
+    }
 
-      // @ts-ignore TS7006
-      inputDevice.onAction(value => {
-        if (inputDeviceType === 'onOffButton') {
-          outputDevice.value(value)
-        } else if (inputDeviceType === 'pushButton') {
-          outputDevice.toggle()
+    return completeDeviceProperties(device)
+  }
+
+  addDevice = ({ pin, label, type }: DeviceAddProps): Device => {
+    if (!availablePins.includes(pin)) {
+      throw Error('invalid pin')
+    }
+
+    if (Object.values(this.configuredDevices).map(({ pin }) => pin).includes(pin)) {
+      throw Error('duplicated pin')
+    }
+
+    if (Object.values(this.configuredDevices).map(({ label }) => label).includes(label)) {
+      throw Error('duplicated label')
+    }
+
+    if (!['led', 'onOffButton', 'pushButton'].includes(type)) {
+      throw Error('invalid device type')
+    }
+
+    const device: Device = {
+      pin,
+      label,
+      type,
+      dependencies: [],
+      gpioDevice: new (deviceTypes[type] as GpioDevice)(pin),
+    }
+
+    this.configuredDevices[pin] = device
+
+    return completeDeviceProperties(device)
+  }
+
+  editDevice = (pin: number, { label }: DeviceEditProps): Device => {
+    const device = this.configuredDevices[pin]
+    if (!device) {
+      throw Error('device not found')
+    }
+
+    device.label = label
+
+    return completeDeviceProperties(device)
+  }
+
+  deleteDevice = (pin: number): void => {
+    const device = this.configuredDevices[pin]
+    if (!device) {
+      throw Error('device not found')
+    }
+
+    if (device.dependencies.length) {
+      throw Error('device has some linked devices and cannot be deleted')
+    }
+
+    delete this.configuredDevices[pin]
+  }
+
+  changeDeviceStatus = (pin: number): DeviceStatus => {
+    const device = this.configuredDevices[pin]
+    if (!device) {
+      throw Error('device not found')
+    }
+
+    if (device.type !== 'led') {
+      throw Error('cannot change the status in this type of device')
+    }
+
+    device.gpioDevice?.toggle()
+
+    return device.gpioDevice?.value() as DeviceStatus
+  }
+
+  linkDevices = ({ inputPin, outputPin }: DependencyProps): void => {
+    const inputDevice = this.configuredDevices[inputPin]
+    if (!inputDevice) {
+      throw Error('input device not found')
+    }
+    if (!['onOffButton', 'pushButton'].includes(inputDevice.type)) {
+      throw Error('invalid input device type')
+    }
+
+    const outputDevice = this.configuredDevices[outputPin]
+    if (!outputDevice) {
+      throw Error('output device not found')
+    }
+    if (!['led'].includes(outputDevice.type)) {
+      throw Error('invalid output device type')
+    }
+
+    if (inputDevice.dependencies.find(innerDevice => innerDevice.pin === outputDevice.pin)) {
+      throw Error('the input pin is already linked to the output pin')
+    }
+
+    if (outputDevice.dependencies.find(innerDevice => innerDevice.pin === inputDevice.pin)) {
+      throw Error('the output pin is already linked to the input pin')
+    }
+
+    inputDevice.dependencies = [...inputDevice.dependencies, {
+      pin: outputDevice.pin,
+      label: outputDevice.label,
+      type: outputDevice.type,
+    } as InnerDevice]
+
+    outputDevice.dependencies = [...outputDevice.dependencies, {
+      pin: inputDevice.pin,
+      label: inputDevice.label,
+      type: inputDevice.type,
+    } as InnerDevice]
+
+    inputDevice.gpioDevice?.onAction(value => {
+      inputDevice.dependencies.forEach(innerDevice => {
+        if (inputDevice.type === 'onOffButton') {
+          this.configuredDevices[innerDevice.pin].gpioDevice?.value(value)
+        } else if (inputDevice.type === 'pushButton') {
+          this.configuredDevices[innerDevice.pin].gpioDevice?.toggle()
         }
       })
     })
-
-    this.configured = true
   }
 
-  public isAccessible: boolean = boardIsAccessible
-  public availableDeviceTypes: Array<string> = Object.keys(deviceTypes)
-
-  validateConfig = (config: Config): ValidationResponse => validateConfiguration(config)
-
-  setConfig = (config: Config): void => {
-    this.config = validateAndGetConfigObject(config)
-    this.configureBoard()
-  }
-
-  devices = (): Devices => {
-    if (!this.configured) {
-      throw Error('Board is not configured')
+  unlinkDevices = ({ inputPin, outputPin }: DependencyProps): void => {
+    const inputDevice = this.configuredDevices[inputPin]
+    if (!inputDevice) {
+      throw Error('input device not found')
+    }
+    if (!(inputDevice.type === 'onOffButton' || inputDevice.type === 'pushButton')) {
+      throw Error('invalid input device type')
     }
 
-    return this.config.devices.map((device) => completeDeviceProperties(this, device)) as Devices
-  }
-
-  dependencies = (): Dependencies => {
-    if (!this.configured) {
-      throw Error('Board is not configured')
+    const outputDevice = this.configuredDevices[outputPin]
+    if (!outputDevice) {
+      throw Error('output device not found')
+    }
+    if (outputDevice.type !== 'led') {
+      throw Error('invalid output device type')
     }
 
-    return this.config.dependencies
-  }
-
-  device = (pin: number): Device => {
-    if (!this.configured) {
-      throw Error('Board is not configured')
-    }
-
-    // @ts-ignore TS276
-    const device: Device = this.config.devices.filter(deviceConfiguration => deviceConfiguration.pin === pin)[0] as Device
-
-    if (!device) {
-      throw Error('Device not found')
-    }
-
-    return completeDeviceProperties(this, device) as Device
-  }
-
-  changeStatus = (pin: number): number => {
-    if (!this.configured) {
-      throw Error('Board is not configured')
-    }
-
-    // @ts-ignore TS7053
-    const device: object = this.configuredDevices[pin] as object
-    if (!device) {
-      throw Error('Device is not configured')
-    }
-
-    // @ts-ignore TS2339
-    if (device.type !== 'led') {
-      throw Error('Cannot change the status in this type of device')
-    }
-
-    // @ts-ignore TS2339
-    device.device.toggle()
-
-    // @ts-ignore TS2339
-    return device.device.value()
+    inputDevice.dependencies = inputDevice.dependencies.filter(innerDevice => innerDevice.pin !== outputPin)
+    outputDevice.dependencies = outputDevice.dependencies.filter(innerDevice => innerDevice.pin !== inputPin)
   }
 }

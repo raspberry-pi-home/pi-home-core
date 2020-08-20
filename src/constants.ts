@@ -26,7 +26,7 @@ const GPIO25 = 25
 const GPIO26 = 26
 const GPIO27 = 27
 
-export const AVAILABLE_PINS = [
+export const availablePins = [
   GPIO2,
   GPIO3,
   GPIO4,
@@ -53,26 +53,4 @@ export const AVAILABLE_PINS = [
   GPIO25,
   GPIO26,
   GPIO27,
-]
-
-// available device types
-const DEVICE_TYPE_INPUT_ONOFF_BUTTON = 'onOffButton'
-const DEVICE_TYPE_INPUT_PUSH_BUTTON = 'pushButton'
-const DEVICE_TYPE_OUTPUT_LED = 'led'
-
-// available input device types
-export const AVAILABLE_DEVICE_TYPE_INPUT = [
-  DEVICE_TYPE_INPUT_ONOFF_BUTTON,
-  DEVICE_TYPE_INPUT_PUSH_BUTTON,
-]
-
-// available output device types
-export const AVAILABLE_DEVICE_TYPE_OUTPUT = [
-  DEVICE_TYPE_OUTPUT_LED,
-]
-
-// available device types
-export const AVAILABLE_DEVICE_TYPES = [
-  ...AVAILABLE_DEVICE_TYPE_INPUT,
-  ...AVAILABLE_DEVICE_TYPE_OUTPUT,
 ]
