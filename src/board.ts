@@ -196,9 +196,9 @@ export class Board {
     inputDevice.gpioDevice?.onAction(value => {
       inputDevice.dependencies.forEach(innerDevice => {
         if (inputDevice.type === 'onOffButton') {
-          this.configuredDevices[innerDevice.pin].gpioDevice?.value(value)
-        } else if (inputDevice.type === 'pushButton') {
           this.configuredDevices[innerDevice.pin].gpioDevice?.toggle()
+        } else if (inputDevice.type === 'pushButton') {
+          this.configuredDevices[innerDevice.pin].gpioDevice?.value(value)
         }
       })
     })
