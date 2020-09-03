@@ -1,3 +1,4 @@
+import { EventEmitter } from 'events'
 import { isAccessible as boardIsAccessible, Led, OnOffButton, PushButton } from 'pi-home-gpio'
 
 import { availablePins } from './constants'
@@ -62,7 +63,12 @@ const completeDeviceProperties = (deviceProps: Device): Device => {
   return device
 }
 
-export class Board {
+const emit = (emitter: EventEmitter, eventName: string, data: object) => {
+  emitter.emit(eventName, data)
+  emitter.emit('all', eventName, data)
+}
+
+export class Board extends EventEmitter {
   private configuredDevices: { [key: number]: Device } = {}
 
   public isAccessible: boolean = boardIsAccessible
@@ -114,6 +120,8 @@ export class Board {
 
     this.configuredDevices[pin] = device
 
+    emit(this, 'deviceAdded', { device: completeDeviceProperties(device) })
+
     return completeDeviceProperties(device)
   }
 
@@ -124,6 +132,8 @@ export class Board {
     }
 
     device.label = label
+
+    emit(this, 'deviceEdited', { device: completeDeviceProperties(device) })
 
     return completeDeviceProperties(device)
   }
@@ -137,6 +147,8 @@ export class Board {
     if (device.dependencies.length) {
       throw Error('device has some linked devices and cannot be deleted')
     }
+
+    emit(this, 'deviceDeleted', { device: completeDeviceProperties(device) })
 
     delete this.configuredDevices[pin]
   }
@@ -152,6 +164,8 @@ export class Board {
     }
 
     device.gpioDevice?.toggle()
+
+    emit(this, 'deviceStatusChanged', { device: completeDeviceProperties(device) })
 
     return device.gpioDevice?.value() as DeviceStatus
   }
@@ -202,6 +216,11 @@ export class Board {
         }
       })
     })
+
+    emit(this, 'devicesLinked', {
+      inputDevice: completeDeviceProperties(inputDevice),
+      outputDevice: completeDeviceProperties(outputDevice),
+    })
   }
 
   unlinkDevices = ({ inputPin, outputPin }: DependencyProps): void => {
@@ -223,5 +242,10 @@ export class Board {
 
     inputDevice.dependencies = inputDevice.dependencies.filter(innerDevice => innerDevice.pin !== outputPin)
     outputDevice.dependencies = outputDevice.dependencies.filter(innerDevice => innerDevice.pin !== inputPin)
+
+    emit(this, 'devicesUnlinked', {
+      inputDevice: completeDeviceProperties(inputDevice),
+      outputDevice: completeDeviceProperties(outputDevice),
+    })
   }
 }

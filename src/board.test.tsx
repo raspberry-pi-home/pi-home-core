@@ -120,6 +120,82 @@ test('getAvailableDevices', () => {
   })
 })
 
+test('deviceAdded', (done) => {
+  const board = new Board()
+
+  board.on('deviceAdded', ({ device }) => {
+    expect(device).toEqual({ ...ledDevice, status: 0, dependencies: [] })
+    done()
+  })
+
+  board.addDevice(ledDevice)
+})
+
+test('deviceEdited', (done) => {
+  const board = new Board()
+
+  board.on('deviceEdited', ({ device }) => {
+    expect(device).toEqual({ ...ledDevice, label: 'Led 22', status: 0, dependencies: [] })
+    done()
+  })
+
+  board.addDevice(ledDevice)
+  board.editDevice(2, { label: 'Led 22' })
+})
+
+test('deviceDeleted', (done) => {
+  const board = new Board()
+
+  board.on('deviceDeleted', ({ device }) => {
+    expect(device).toEqual({ ...ledDevice, status: 0, dependencies: [] })
+    done()
+  })
+
+  board.addDevice(ledDevice)
+  board.deleteDevice(2)
+})
+
+test('deviceStatusChanged', (done) => {
+  const board = new Board()
+
+  board.on('deviceStatusChanged', ({ device }) => {
+    expect(device).toEqual({ ...ledDevice, status: 1, dependencies: [] })
+    done()
+  })
+
+  board.addDevice(ledDevice)
+  board.changeDeviceStatus(2)
+})
+
+test('devicesLinked', (done) => {
+  const board = new Board()
+
+  board.on('devicesLinked', ({ inputDevice, outputDevice }) => {
+    expect(inputDevice.pin).toEqual(20)
+    expect(outputDevice.pin).toEqual(2)
+    done()
+  })
+
+  board.addDevice(ledDevice)
+  board.addDevice(buttonDevice)
+  board.linkDevices({ inputPin: 20, outputPin: 2 })
+})
+
+test('devicesUnlinked', (done) => {
+  const board = new Board()
+
+  board.on('devicesUnlinked', ({ inputDevice, outputDevice }) => {
+    expect(inputDevice.pin).toEqual(20)
+    expect(outputDevice.pin).toEqual(2)
+    done()
+  })
+
+  board.addDevice(ledDevice)
+  board.addDevice(buttonDevice)
+  board.linkDevices({ inputPin: 20, outputPin: 2 })
+  board.unlinkDevices({ inputPin: 20, outputPin: 2 })
+})
+
 test('all the things', () => {
   const board = new Board()
 

@@ -13,6 +13,9 @@ import { Board } from 'pi-home-core'
 
 const board = new Board()
 
+board.on('deviceStatusChanged', (data) => console.log(data))
+board.on('all', (eventName, data) => console.log(eventName, data))
+
 board.addDevice({
   pin: 2,
   type: 'led',
@@ -57,6 +60,18 @@ Unlinks two devices
 
 #### isAccessible
 Returns if board is running on a raspberry-pi or not
+
+### on(['all',] eventName, data)
+Whenever the status of the board change, an event will be fired with the devices involved
+
+Event names are:
+* all
+* deviceAdded
+* deviceEdited
+* deviceDeleted
+* deviceStatusChanged
+* devicesLinked
+* devicesUnlinked
 
 ---
 
