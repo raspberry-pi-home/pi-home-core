@@ -120,7 +120,7 @@ export class Board extends EventEmitter {
 
     this.configuredDevices[pin] = device
 
-    emit(this, 'deviceAdded', { device: completeDeviceProperties(device) })
+    emit(this, 'deviceAdded', completeDeviceProperties(device))
 
     return completeDeviceProperties(device)
   }
@@ -133,7 +133,7 @@ export class Board extends EventEmitter {
 
     device.label = label
 
-    emit(this, 'deviceEdited', { device: completeDeviceProperties(device) })
+    emit(this, 'deviceEdited', completeDeviceProperties(device))
 
     return completeDeviceProperties(device)
   }
@@ -148,7 +148,7 @@ export class Board extends EventEmitter {
       throw Error('device has some linked devices and cannot be deleted')
     }
 
-    emit(this, 'deviceDeleted', { device: completeDeviceProperties(device) })
+    emit(this, 'deviceDeleted', { pin })
 
     delete this.configuredDevices[pin]
   }
@@ -165,7 +165,7 @@ export class Board extends EventEmitter {
 
     device.gpioDevice?.toggle()
 
-    emit(this, 'deviceStatusChanged', { device: completeDeviceProperties(device) })
+    emit(this, 'deviceStatusChanged', { pin: pin, status: device.gpioDevice?.value() })
 
     return device.gpioDevice?.value() as DeviceStatus
   }
@@ -217,10 +217,7 @@ export class Board extends EventEmitter {
       })
     })
 
-    emit(this, 'devicesLinked', {
-      inputDevice: completeDeviceProperties(inputDevice),
-      outputDevice: completeDeviceProperties(outputDevice),
-    })
+    emit(this, 'devicesLinked', { inputPin, outputPin })
   }
 
   unlinkDevices = ({ inputPin, outputPin }: DependencyProps): void => {
@@ -243,9 +240,6 @@ export class Board extends EventEmitter {
     inputDevice.dependencies = inputDevice.dependencies.filter(innerDevice => innerDevice.pin !== outputPin)
     outputDevice.dependencies = outputDevice.dependencies.filter(innerDevice => innerDevice.pin !== inputPin)
 
-    emit(this, 'devicesUnlinked', {
-      inputDevice: completeDeviceProperties(inputDevice),
-      outputDevice: completeDeviceProperties(outputDevice),
-    })
+    emit(this, 'devicesUnlinked', { inputPin, outputPin })
   }
 }

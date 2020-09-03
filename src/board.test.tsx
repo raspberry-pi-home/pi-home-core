@@ -123,8 +123,8 @@ test('getAvailableDevices', () => {
 test('deviceAdded', (done) => {
   const board = new Board()
 
-  board.on('deviceAdded', ({ device }) => {
-    expect(device).toEqual({ ...ledDevice, status: 0, dependencies: [] })
+  board.on('deviceAdded', (data) => {
+    expect(data).toEqual({ ...ledDevice, status: 0, dependencies: [] })
     done()
   })
 
@@ -134,8 +134,8 @@ test('deviceAdded', (done) => {
 test('deviceEdited', (done) => {
   const board = new Board()
 
-  board.on('deviceEdited', ({ device }) => {
-    expect(device).toEqual({ ...ledDevice, label: 'Led 22', status: 0, dependencies: [] })
+  board.on('deviceEdited', (data) => {
+    expect(data).toEqual({ ...ledDevice, label: 'Led 22', status: 0, dependencies: [] })
     done()
   })
 
@@ -146,8 +146,8 @@ test('deviceEdited', (done) => {
 test('deviceDeleted', (done) => {
   const board = new Board()
 
-  board.on('deviceDeleted', ({ device }) => {
-    expect(device).toEqual({ ...ledDevice, status: 0, dependencies: [] })
+  board.on('deviceDeleted', (data) => {
+    expect(data).toEqual({ pin: 2 })
     done()
   })
 
@@ -158,8 +158,8 @@ test('deviceDeleted', (done) => {
 test('deviceStatusChanged', (done) => {
   const board = new Board()
 
-  board.on('deviceStatusChanged', ({ device }) => {
-    expect(device).toEqual({ ...ledDevice, status: 1, dependencies: [] })
+  board.on('deviceStatusChanged', (data) => {
+    expect(data).toEqual({ pin: 2, status: 1 })
     done()
   })
 
@@ -170,9 +170,8 @@ test('deviceStatusChanged', (done) => {
 test('devicesLinked', (done) => {
   const board = new Board()
 
-  board.on('devicesLinked', ({ inputDevice, outputDevice }) => {
-    expect(inputDevice.pin).toEqual(20)
-    expect(outputDevice.pin).toEqual(2)
+  board.on('devicesLinked', (data) => {
+    expect(data).toEqual({ inputPin: 20, outputPin: 2 })
     done()
   })
 
@@ -184,9 +183,8 @@ test('devicesLinked', (done) => {
 test('devicesUnlinked', (done) => {
   const board = new Board()
 
-  board.on('devicesUnlinked', ({ inputDevice, outputDevice }) => {
-    expect(inputDevice.pin).toEqual(20)
-    expect(outputDevice.pin).toEqual(2)
+  board.on('devicesUnlinked', (data) => {
+    expect(data).toEqual({ inputPin: 20, outputPin: 2 })
     done()
   })
 
