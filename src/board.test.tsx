@@ -9,7 +9,7 @@ const ledDevice = {
 
 const buttonDevice = {
   pin: 20,
-  type: 'onOffButton' as DeviceType,
+  type: 'pushButton' as DeviceType,
   label: 'Button 20',
 }
 
@@ -80,7 +80,7 @@ test('linkDevices', () => {
   // safe check
   expect(() => board.linkDevices({ inputPin: 20, outputPin: 2 })).toThrow('the input pin is already linked to the output pin')
 
-  expect(board.getDevice(2)).toEqual({ ...ledDevice, status: 0, dependencies: [{ pin: 20, type: 'onOffButton', label: 'Button 20' }] })
+  expect(board.getDevice(2)).toEqual({ ...ledDevice, status: 0, dependencies: [{ pin: 20, type: 'pushButton', label: 'Button 20' }] })
   expect(board.getDevice(20)).toEqual({ ...buttonDevice, dependencies: [{ pin: 2, type: 'led', label: 'Led 2' }] })
 })
 
@@ -91,7 +91,7 @@ test('unlinkDevices', () => {
   board.addDevice(ledDevice)
   board.linkDevices({ inputPin: 20, outputPin: 2 })
 
-  expect(board.getDevice(2)).toEqual({ ...ledDevice, status: 0, dependencies: [{ pin: 20, type: 'onOffButton', label: 'Button 20' }] })
+  expect(board.getDevice(2)).toEqual({ ...ledDevice, status: 0, dependencies: [{ pin: 20, type: 'pushButton', label: 'Button 20' }] })
   expect(board.getDevice(20)).toEqual({ ...buttonDevice, dependencies: [{ pin: 2, type: 'led', label: 'Led 2' }] })
 
   expect(() => board.unlinkDevices({ inputPin: 22, outputPin: 2 })).toThrow('input device not found')
@@ -115,8 +115,8 @@ test('getAvailableDevices', () => {
   board.addDevice(ledDevice)
   expect(board.getAvailableDevices()).toEqual({
     led: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 27],
-    onOffButton: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 27],
     pushButton: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 27],
+    toggleButton: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 27],
   })
 })
 
@@ -221,21 +221,21 @@ test('all the things', () => {
 
   device = board.addDevice({
     pin: 20,
-    type: 'onOffButton',
+    type: 'pushButton',
     label: 'Button 20',
   })
   expect(device).toEqual(board.getDevice(20))
 
   device = board.addDevice({
     pin: 21,
-    type: 'pushButton',
+    type: 'toggleButton',
     label: 'Button 21',
   })
   expect(device).toEqual(board.getDevice(21))
 
   device = board.addDevice({
     pin: 23,
-    type: 'pushButton',
+    type: 'toggleButton',
     label: 'Button 23',
   })
   expect(device).toEqual(board.getDevice(23))
@@ -273,31 +273,31 @@ test('all the things', () => {
       type: 'led',
       label: 'Led 22',
       status: 1,
-      dependencies: [{ pin: 20, type: 'onOffButton', label: 'Button 20' }],
+      dependencies: [{ pin: 20, type: 'pushButton', label: 'Button 20' }],
     },
     {
       pin: 3,
       type: 'led',
       label: 'Led 3',
       status: 0,
-      dependencies: [{ pin: 20, type: 'onOffButton', label: 'Button 20' }],
+      dependencies: [{ pin: 20, type: 'pushButton', label: 'Button 20' }],
     },
     {
       pin: 4,
       type: 'led',
       label: 'Led 4',
       status: 0,
-      dependencies: [{ pin: 21, type: 'pushButton', label: 'Button 21' }],
+      dependencies: [{ pin: 21, type: 'toggleButton', label: 'Button 21' }],
     },
     {
       pin: 20,
-      type: 'onOffButton',
+      type: 'pushButton',
       label: 'Button 20',
       dependencies: [{ pin: 2, type: 'led', label: 'Led 2' }, { pin: 3, type: 'led', label: 'Led 3' }],
     },
     {
       pin: 21,
-      type: 'pushButton',
+      type: 'toggleButton',
       label: 'Button 21',
       dependencies: [{ pin: 4, type: 'led', label: 'Led 4' }],
     },

@@ -1,10 +1,10 @@
 import { EventEmitter } from 'events'
-import { isAccessible as boardIsAccessible, Led, OnOffButton, PushButton } from 'pi-home-gpio'
+import { isAccessible as boardIsAccessible, Led, PushButton, ToggleButton } from 'pi-home-gpio'
 
 import { availablePins } from './constants'
 
 type DeviceStatus = 0 | 1
-export type DeviceType = 'led' | 'onOffButton' | 'pushButton'
+export type DeviceType = 'led' | 'pushButton' | 'toggleButton'
 
 interface GpioDevice {
   new (pin: number): GpioDevice
@@ -45,8 +45,8 @@ interface DependencyProps {
 
 const deviceTypes: { [key: string]: object } = {
   led: Led as GpioDevice,
-  onOffButton: OnOffButton as GpioDevice,
   pushButton: PushButton as GpioDevice,
+  toggleButton: ToggleButton as GpioDevice,
 }
 
 const completeDeviceProperties = (deviceProps: Device): Device => {
@@ -106,7 +106,7 @@ export class Board extends EventEmitter {
       throw Error('duplicated label')
     }
 
-    if (!['led', 'onOffButton', 'pushButton'].includes(type)) {
+    if (!['led', 'pushButton', 'toggleButton'].includes(type)) {
       throw Error('invalid device type')
     }
 
@@ -175,7 +175,7 @@ export class Board extends EventEmitter {
     if (!inputDevice) {
       throw Error('input device not found')
     }
-    if (!['onOffButton', 'pushButton'].includes(inputDevice.type)) {
+    if (!['pushButton', 'toggleButton'].includes(inputDevice.type)) {
       throw Error('invalid input device type')
     }
 
@@ -209,11 +209,16 @@ export class Board extends EventEmitter {
 
     inputDevice.gpioDevice?.onAction(value => {
       inputDevice.dependencies.forEach(innerDevice => {
-        if (inputDevice.type === 'onOffButton') {
+        if (inputDevice.type === 'pushButton') {
           this.configuredDevices[innerDevice.pin].gpioDevice?.toggle()
-        } else if (inputDevice.type === 'pushButton') {
+        } else if (inputDevice.type === 'toggleButton') {
           this.configuredDevices[innerDevice.pin].gpioDevice?.value(value)
         }
+
+        emit(this, 'deviceStatusChanged', {
+          pin: innerDevice.pin,
+          status: this.configuredDevices[innerDevice.pin].gpioDevice?.value(),
+        })
       })
     })
 
@@ -225,7 +230,7 @@ export class Board extends EventEmitter {
     if (!inputDevice) {
       throw Error('input device not found')
     }
-    if (!(inputDevice.type === 'onOffButton' || inputDevice.type === 'pushButton')) {
+    if (!(inputDevice.type === 'pushButton' || inputDevice.type === 'toggleButton')) {
       throw Error('invalid input device type')
     }
 
