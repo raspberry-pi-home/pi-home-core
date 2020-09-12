@@ -101,7 +101,7 @@ export class Board extends EventEmitter {
       throw Error('duplicated label')
     }
 
-    if (!['led', 'pushButton', 'toggleButton'].includes(type)) {
+    if (!Object.keys(deviceTypes).includes(type)) {
       throw Error('invalid device type')
     }
 
@@ -203,6 +203,11 @@ export class Board extends EventEmitter {
     } as InnerDevice]
 
     inputDevice.gpioDevice?.onAction(value => {
+      emit(this, 'deviceStatusChanged', {
+        pin: inputDevice.pin,
+        status: inputDevice.gpioDevice?.value(),
+      })
+
       inputDevice.dependencies.forEach(innerDevice => {
         if (inputDevice.type === 'pushButton') {
           this.configuredDevices[innerDevice.pin].gpioDevice?.toggle()
