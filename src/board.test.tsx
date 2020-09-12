@@ -81,7 +81,7 @@ test('linkDevices', () => {
   expect(() => board.linkDevices({ inputPin: 20, outputPin: 2 })).toThrow('the input pin is already linked to the output pin')
 
   expect(board.getDevice(2)).toEqual({ ...ledDevice, status: 0, dependencies: [{ pin: 20, type: 'pushButton', label: 'Button 20' }] })
-  expect(board.getDevice(20)).toEqual({ ...buttonDevice, dependencies: [{ pin: 2, type: 'led', label: 'Led 2' }] })
+  expect(board.getDevice(20)).toEqual({ ...buttonDevice, status: 0, dependencies: [{ pin: 2, type: 'led', label: 'Led 2' }] })
 })
 
 test('unlinkDevices', () => {
@@ -92,7 +92,7 @@ test('unlinkDevices', () => {
   board.linkDevices({ inputPin: 20, outputPin: 2 })
 
   expect(board.getDevice(2)).toEqual({ ...ledDevice, status: 0, dependencies: [{ pin: 20, type: 'pushButton', label: 'Button 20' }] })
-  expect(board.getDevice(20)).toEqual({ ...buttonDevice, dependencies: [{ pin: 2, type: 'led', label: 'Led 2' }] })
+  expect(board.getDevice(20)).toEqual({ ...buttonDevice, status: 0, dependencies: [{ pin: 2, type: 'led', label: 'Led 2' }] })
 
   expect(() => board.unlinkDevices({ inputPin: 22, outputPin: 2 })).toThrow('input device not found')
   expect(() => board.unlinkDevices({ inputPin: 2, outputPin: 2 })).toThrow('invalid input device type')
@@ -105,7 +105,7 @@ test('unlinkDevices', () => {
   expect(() => board.unlinkDevices({ inputPin: 20, outputPin: 2 })).not.toThrow()
 
   expect(board.getDevice(2)).toEqual({ ...ledDevice, status: 0, dependencies: [] })
-  expect(board.getDevice(20)).toEqual({ ...buttonDevice, dependencies: [] })
+  expect(board.getDevice(20)).toEqual({ ...buttonDevice, status: 0, dependencies: [] })
 })
 
 test('getAvailableDevices', () => {
@@ -293,12 +293,14 @@ test('all the things', () => {
       pin: 20,
       type: 'pushButton',
       label: 'Button 20',
+      status: 0,
       dependencies: [{ pin: 2, type: 'led', label: 'Led 2' }, { pin: 3, type: 'led', label: 'Led 3' }],
     },
     {
       pin: 21,
       type: 'toggleButton',
       label: 'Button 21',
+      status: 0,
       dependencies: [{ pin: 4, type: 'led', label: 'Led 4' }],
     },
   ])

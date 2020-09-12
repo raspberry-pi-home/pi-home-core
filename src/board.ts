@@ -50,17 +50,12 @@ const deviceTypes: { [key: string]: object } = {
 }
 
 const completeDeviceProperties = (deviceProps: Device): Device => {
-  let { gpioDevice, ...device } = deviceProps
+  const { gpioDevice, ...device } = deviceProps
 
-  // add status for leds
-  if (device.type === 'led') {
-    device = {
-      ...device,
-      status: gpioDevice?.value(),
-    } as Device
-  }
-
-  return device
+  return {
+    ...device,
+    status: gpioDevice?.value(),
+  } as Device
 }
 
 const emit = (emitter: EventEmitter, eventName: string, data: object) => {
